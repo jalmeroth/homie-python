@@ -17,13 +17,13 @@ class HomieMqtt(paho_mqtt.Client):
         self._homieObj.mqttSetup()
 
     def on_message(self, mqttc, obj, msg):
-        logger.info(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        logger.debug(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     def on_publish(self, mqttc, obj, mid):
-        logger.info("mid: " + str(mid))
+        logger.debug("mid: " + str(mid))
 
     def on_subscribe(self, mqttc, obj, mid, granted_qos):
-        logger.info("Subscribed: " + str(mid) + " " + str(granted_qos))
+        logger.debug("Subscribed: " + str(mid) + " " + str(granted_qos))
 
     def on_disconnect(self, mqttc, obj, rc):
         self.connected = False
@@ -34,7 +34,7 @@ class HomieMqtt(paho_mqtt.Client):
 
     @connected.setter
     def connected(self, state):
-        logger.info("connected: {}".format(state))
+        logger.debug("connected: {}".format(state))
         self._connected = state
 
 
