@@ -20,7 +20,7 @@ class Homie(object):
             self.clientId,
         ])
 
-        self.mqtt = HomieMqtt(self.clientId)
+        self.mqtt = HomieMqtt(self, self.clientId)
         self.host = kwargs.get("HOST")
         self.port = kwargs.get("PORT", 1883)
         self.keepalive = kwargs.get("KEEPALIVE", 60)
@@ -28,7 +28,7 @@ class Homie(object):
         if not self.host:
             raise ValueError("No host specified.")
 
-        self.run()
+        self.mqttRun()
 
     def on_set(self, mqttc, obj, msg):
         pass
@@ -73,10 +73,15 @@ class Homie(object):
         self.mqtt.message_callback_add(
             subscription, callback)
 
-    def run(self):
+    def mqttRun(self):
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
         self.mqtt.subscribe(self.mqtt_topic + "/#", 0)
+
+    def mqttSetup(self):
+        logger.debug("connected: {}".format(self.mqtt.connected))
+        if not self.mqtt.connected:
+            raise Exception("MQTT not connected.")
 
     @property
     def baseTopic(self):

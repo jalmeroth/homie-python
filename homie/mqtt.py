@@ -7,12 +7,14 @@ logger = logging.getLogger(__name__)
 class HomieMqtt(paho_mqtt.Client):
     """docstring for HomieMqtt"""
 
-    def __init__(self, clientId):
+    def __init__(self, homieObj, clientId):
         super(HomieMqtt, self).__init__(clientId)
         self._connected = False
+        self._homieObj = homieObj
 
     def on_connect(self, mqttc, obj, flags, rc):
         self.connected = True
+        self._homieObj.mqttSetup()
 
     def on_message(self, mqttc, obj, msg):
         logger.info(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
