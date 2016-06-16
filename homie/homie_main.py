@@ -14,13 +14,13 @@ class Homie(object):
         self.fwname = None
         self.fwversion = None
         self.baseTopic = kwargs.get("TOPIC")
-        self.clientId = kwargs.get("CLIENT_ID")
+        self.deviceId = kwargs.get("DEVICE_ID")
         self.mqtt_topic = "/".join([
             self.baseTopic,
-            self.clientId,
+            self.deviceId,
         ])
 
-        self.mqtt = HomieMqtt(self, self.clientId)
+        self.mqtt = HomieMqtt(self, self.deviceId)
         self.host = kwargs.get("HOST")
         self.port = kwargs.get("PORT", 1883)
         self.keepalive = kwargs.get("KEEPALIVE", 60)
@@ -92,12 +92,12 @@ class Homie(object):
         self._baseTopic = baseTopic
 
     @property
-    def clientId(self):
-        return self._clientId
+    def deviceId(self):
+        return self._deviceId
 
-    @clientId.setter
-    def clientId(self, clientId):
-        self._clientId = clientId
+    @deviceId.setter
+    def deviceId(self, deviceId):
+        self._deviceId = deviceId
 
 
 def main():
