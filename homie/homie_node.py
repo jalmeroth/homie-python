@@ -11,6 +11,22 @@ class HomieNode(object):
         self.nodeId = nodeId
         self.nodeType = nodeType
 
+    @property
+    def nodeId(self):
+        return self._nodeId
+
+    @nodeId.setter
+    def nodeId(self, nodeId):
+        self._nodeId = nodeId
+
+    @property
+    def nodeType(self):
+        return self._nodeType
+
+    @nodeType.setter
+    def nodeType(self, nodeType):
+        self._nodeType = nodeType
+
 
 def main():
     pass
