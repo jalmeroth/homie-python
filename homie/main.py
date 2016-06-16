@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import time
 import socket
 import logging
@@ -105,9 +106,29 @@ class Homie(object):
             payload=payload, retain=True)
 
     def mqttSignal(self):
+        # default payload
+        payload = 100
+
+        # found on linux
+        wireless = "/proc/net/wireless"
+        wireless = os.path.realpath(os.path.abspath(wireless))
+
+        logger.debug("wireless: {} exists: {}".format(
+            wireless,
+            os.path.exists(wireless)))
+
+        if os.path.exists(wireless):
+            cmd = "cat %s | awk 'NR==3 {print $3}'" % wireless
+            logger.debug("cmd: {}".format(cmd))
+
+            qlink = os.popen(cmd).read().strip()
+            if qlink:
+                payload = int(float(qlink))
+                logger.debug("qlink: {}".format(payload))
+
         self.mqtt.publish(
             self.mqtt_topic + "/$signal",
-            payload=100, retain=True)
+            payload=payload, retain=True)
 
     def mqttSetup(self):
         self.mqtt.publish(
