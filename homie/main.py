@@ -92,10 +92,17 @@ class Homie(object):
         self.mqtt.loop_start()
         self.mqtt.subscribe(self.mqtt_topic + "/#", 0)
 
+    def mqttLocalip(self):
+        payload = socket.gethostbyname(socket.gethostname())
+        self.mqtt.publish(
+            self.mqtt_topic + "/$localip",
+            payload=payload, retain=True)
+
     def mqttUptime(self):
+        payload = int(time.time() - self.startTime)
         self.mqtt.publish(
             self.mqtt_topic + "/$uptime",
-            payload=(time.time() - self.startTime), retain=True)
+            payload=payload, retain=True)
 
     def mqttSignal(self):
         self.mqtt.publish(
@@ -115,9 +122,7 @@ class Homie(object):
         self.mqtt.publish(
             self.mqtt_topic + "/$fwversion",
             payload=self.fwversion, retain=True)
-        self.mqtt.publish(
-            self.mqtt_topic + "/$localip",
-            payload=socket.gethostbyname(socket.gethostname()), retain=True)
+        self.mqttLocalip()
         self.mqttUptime()
         self.mqttSignal()
 
