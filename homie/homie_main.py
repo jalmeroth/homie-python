@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import time
+import socket
 import logging
 from homie.mqtt import HomieMqtt
 logger = logging.getLogger(__name__)
@@ -10,12 +12,13 @@ class Homie(object):
     def __init__(self, **kwargs):
         super(Homie, self).__init__()
         logger.debug("kwargs: {}".format(kwargs))
-
+        self.startTime = time.time()
         self.fwname = None
         self.fwversion = None
         self.baseTopic = kwargs.get("TOPIC")
         self.deviceId = kwargs.get("DEVICE_ID")
         self.deviceName = kwargs.get("DEVICE_NAME")
+
         self.mqtt_topic = "/".join([
             self.baseTopic,
             self.deviceId,
@@ -94,6 +97,12 @@ class Homie(object):
         self.mqtt.publish(
             self.mqtt_topic + "/$fwversion",
             payload=self.fwversion, retain=True)
+        self.mqtt.publish(
+            self.mqtt_topic + "/$localip",
+            payload=socket.gethostbyname(socket.gethostname()), retain=True)
+        self.mqtt.publish(
+            self.mqtt_topic + "/$uptime",
+            payload=(time.time()-self.startTime), retain=True)
 
     @property
     def baseTopic(self):
