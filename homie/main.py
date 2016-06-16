@@ -3,6 +3,7 @@ import time
 import socket
 import logging
 from homie.mqtt import HomieMqtt
+from homie.timer import HomieTimer
 logger = logging.getLogger(__name__)
 
 
@@ -34,6 +35,11 @@ class Homie(object):
 
         self.mqttRun()
 
+        uptime = HomieTimer(60, self.mqttUptime)
+        signal = HomieTimer(60, self.mqttSignal)
+        uptime.start()
+        signal.start()
+
     def on_set(self, mqttc, obj, msg):
         pass
 
@@ -47,7 +53,7 @@ class Homie(object):
         """docstring for setFirmware"""
         self.fwname = name
         self.fwversion = version
-        logger.info("{}: {}".format(self.fwname, self.fwversion))
+        logger.debug("{}: {}".format(self.fwname, self.fwversion))
 
     def setNodeProperty(self, homieNode, prop, val, retained=True):
         topic = "/".join([
@@ -56,12 +62,14 @@ class Homie(object):
             prop
         ])
 
+        self.mqtt.publish(topic, payload=val, retain=retained)
+
         msgs = [
             topic,
             str(val),
             str(retained)
         ]
-        logger.info(" ".join(msgs))
+        logger.debug(" ".join(msgs))
 
     def subscribe(self, homieNode, attr, callback):
         subscription = "/".join(
@@ -72,7 +80,7 @@ class Homie(object):
                 "set"
             ])
 
-        logger.info("subscribe: {}".format(subscription))
+        logger.debug("subscribe: {}".format(subscription))
 
         self.mqtt.message_callback_add(
             subscription, callback)
@@ -83,6 +91,16 @@ class Homie(object):
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
         self.mqtt.subscribe(self.mqtt_topic + "/#", 0)
+
+    def mqttUptime(self):
+        self.mqtt.publish(
+            self.mqtt_topic + "/$uptime",
+            payload=(time.time() - self.startTime), retain=True)
+
+    def mqttSignal(self):
+        self.mqtt.publish(
+            self.mqtt_topic + "/$signal",
+            payload=100, retain=True)
 
     def mqttSetup(self):
         self.mqtt.publish(
@@ -100,9 +118,8 @@ class Homie(object):
         self.mqtt.publish(
             self.mqtt_topic + "/$localip",
             payload=socket.gethostbyname(socket.gethostname()), retain=True)
-        self.mqtt.publish(
-            self.mqtt_topic + "/$uptime",
-            payload=(time.time()-self.startTime), retain=True)
+        self.mqttUptime()
+        self.mqttSignal()
 
     @property
     def baseTopic(self):
