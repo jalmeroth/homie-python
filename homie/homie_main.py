@@ -15,6 +15,7 @@ class Homie(object):
         self.fwversion = None
         self.baseTopic = kwargs.get("TOPIC")
         self.deviceId = kwargs.get("DEVICE_ID")
+        self.deviceName = kwargs.get("DEVICE_NAME")
         self.mqtt_topic = "/".join([
             self.baseTopic,
             self.deviceId,
@@ -74,14 +75,25 @@ class Homie(object):
             subscription, callback)
 
     def mqttRun(self):
+        self.mqtt.will_set(
+            self.mqtt_topic + "/$online", payload="false", retain=True)
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
         self.mqtt.subscribe(self.mqtt_topic + "/#", 0)
 
     def mqttSetup(self):
-        logger.debug("connected: {}".format(self.mqtt.connected))
-        if not self.mqtt.connected:
-            raise Exception("MQTT not connected.")
+        self.mqtt.publish(
+            self.mqtt_topic + "/$online",
+            payload="true", retain=True)
+        self.mqtt.publish(
+            self.mqtt_topic + "/$name",
+            payload=self.deviceName, retain=True)
+        self.mqtt.publish(
+            self.mqtt_topic + "/$fwname",
+            payload=self.fwname, retain=True)
+        self.mqtt.publish(
+            self.mqtt_topic + "/$fwversion",
+            payload=self.fwversion, retain=True)
 
     @property
     def baseTopic(self):
