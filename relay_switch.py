@@ -6,7 +6,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 Homie = homie.Homie(**homie.config)
-switchNode = homie.HomieNode("switch", "switch")
+switchNode = Homie.Node("switch", "switch")
 
 
 def switchOnHandler(mqttc, obj, msg):

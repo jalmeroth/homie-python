@@ -5,6 +5,7 @@ import socket
 import logging
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
+from homie.node import HomieNode
 logger = logging.getLogger(__name__)
 
 
@@ -20,6 +21,7 @@ class Homie(object):
         self.baseTopic = kwargs.get("TOPIC")
         self.deviceId = kwargs.get("DEVICE_ID")
         self.deviceName = kwargs.get("DEVICE_NAME")
+        self.nodes = []
 
         self.mqtt_topic = "/".join([
             self.baseTopic,
@@ -49,6 +51,11 @@ class Homie(object):
 
     def on_ota(self, mqttc, obj, msg):
         pass
+
+    def Node(self, *args):
+        homeNode = HomieNode(*args)
+        self.nodes.append(homeNode)
+        return(homeNode)
 
     def setFirmware(self, name, version):
         """docstring for setFirmware"""
@@ -92,6 +99,13 @@ class Homie(object):
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
         self.mqtt.subscribe(self.mqtt_topic + "/#", 0)
+
+    def mqttNodes(self):
+        payload = ",".join(
+            [(str(x.nodeId) + ":" + str(x.nodeType)) for x in self.nodes])
+        self.mqtt.publish(
+            self.mqtt_topic + "/$nodes",
+            payload=payload, retain=True)
 
     def mqttLocalip(self):
         payload = socket.gethostbyname(socket.gethostname())
@@ -143,6 +157,7 @@ class Homie(object):
         self.mqtt.publish(
             self.mqtt_topic + "/$fwversion",
             payload=self.fwversion, retain=True)
+        self.mqttNodes()
         self.mqttLocalip()
         self.mqttUptime()
         self.mqttSignal()
