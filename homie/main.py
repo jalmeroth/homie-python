@@ -43,15 +43,6 @@ class Homie(object):
         uptime.start()
         signal.start()
 
-    def on_set(self, mqttc, obj, msg):
-        pass
-
-    def on_reset(self, mqttc, obj, msg):
-        pass
-
-    def on_ota(self, mqttc, obj, msg):
-        pass
-
     def Node(self, *args):
         homeNode = HomieNode(*args)
         self.nodes.append(homeNode)
