@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 import time
 import socket
 import logging
@@ -116,20 +115,19 @@ class Homie(object):
 
         # found on linux
         wireless = "/proc/net/wireless"
-        wireless = os.path.realpath(os.path.abspath(wireless))
 
-        logger.debug("wireless: {} exists: {}".format(
-            wireless,
-            os.path.exists(wireless)))
-
-        if os.path.exists(wireless):
-            cmd = "cat %s | awk 'NR==3 {print $3}'" % wireless
-            logger.debug("cmd: {}".format(cmd))
-
-            qlink = os.popen(cmd).read().strip()
-            if qlink:
-                payload = int(float(qlink))
-                logger.debug("qlink: {}".format(payload))
+        try:
+            fp = open(wireless)
+        except EnvironmentError as e:
+            logger.debug(e)
+        else:
+            for i, line in enumerate(fp):
+                if i == 2:
+                    data = line.split()
+                    payload = int(float(data[2]))
+                elif i > 2:
+                    break
+            fp.close()
 
         self.mqtt.publish(
             self.mqtt_topic + "/$signal",
