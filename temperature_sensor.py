@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 TEMPERATURE_INTERVAL = 3
 
-Homie = homie.Homie(**homie.config)
+Homie = homie.Homie("homie-python.json")
 temperatureNode = Homie.Node("temperature", "temperature")
 humidityNode = Homie.Node("humidity", "humidity")
 

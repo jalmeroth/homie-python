@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+import json
 import time
 import socket
 import logging
+import os.path
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
@@ -11,15 +13,18 @@ logger = logging.getLogger(__name__)
 class Homie(object):
     """docstring for Homie"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, configFile=None):
         super(Homie, self).__init__()
-        logger.debug("kwargs: {}".format(kwargs))
+
+        self.config = self.loadConfig(configFile)
+        logger.debug("config: {}".format(self.config))
+
         self.startTime = time.time()
         self.fwname = None
         self.fwversion = None
-        self.baseTopic = kwargs.get("TOPIC")
-        self.deviceId = kwargs.get("DEVICE_ID")
-        self.deviceName = kwargs.get("DEVICE_NAME")
+        self.baseTopic = self.config.get("TOPIC", "devices")
+        self.deviceId = self.config.get("DEVICE_ID", "xxxxxxxx")
+        self.deviceName = self.config.get("DEVICE_NAME", "xxxxxxxx")
         self.nodes = []
 
         self.mqtt_topic = "/".join([
@@ -28,9 +33,9 @@ class Homie(object):
         ])
 
         self.mqtt = HomieMqtt(self, self.deviceId)
-        self.host = kwargs.get("HOST")
-        self.port = kwargs.get("PORT", 1883)
-        self.keepalive = kwargs.get("KEEPALIVE", 60)
+        self.host = self.config.get("HOST", "test.mosquitto.org")
+        self.port = self.config.get("PORT", 1883)
+        self.keepalive = self.config.get("KEEPALIVE", 60)
 
         if not self.host:
             raise ValueError("No host specified.")
@@ -39,6 +44,24 @@ class Homie(object):
 
         self.uptimeTimer = HomieTimer(60, self.mqttUptime)
         self.signalTimer = HomieTimer(60, self.mqttSignal)
+
+    def loadConfig(self, configFile=None):
+        config = {}
+
+        if configFile:
+            configFile = os.path.realpath(configFile)
+            try:
+                fp = open(configFile)
+            except EnvironmentError as e:
+                logger.debug(e)
+            else:
+                try:
+                    config = json.load(fp)
+                except Exception as e:
+                    raise e
+                finally:
+                    fp.close()
+        return config
 
     def Node(self, *args):
         homeNode = HomieNode(*args)

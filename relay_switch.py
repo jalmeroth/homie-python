@@ -5,7 +5,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-Homie = homie.Homie(**homie.config)
+Homie = homie.Homie("homie-python.json")
 switchNode = Homie.Node("switch", "switch")
 
 

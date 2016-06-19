@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-config = {
+{
     "HOST": "test.mosquitto.org",
     "PORT": 1883,
     "KEEPALIVE": 10,
