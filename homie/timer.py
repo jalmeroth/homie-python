@@ -22,7 +22,11 @@ class HomieTimer(object):
         self.thread.start()
 
     def cancel(self):
+        logger.debug("Canceling: {}".format(self))
         self.thread.cancel()
+
+    def __del__(self):
+        logger.debug("Quitting.")
 
 
 def main():

@@ -37,6 +37,9 @@ class HomieMqtt(paho_mqtt.Client):
         logger.debug("connected: {}".format(state))
         self._connected = state
 
+    def __del__(self):
+        logger.debug("Quitting.")
+
 
 def main():
     pass
