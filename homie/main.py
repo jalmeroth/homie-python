@@ -4,6 +4,7 @@ import time
 import socket
 import logging
 import os.path
+from os import getenv
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 class Homie(object):
     """docstring for Homie"""
 
-    def __init__(self, configFile=None):
+    def __init__(self, configFile):
         super(Homie, self).__init__()
 
         self.config = self.loadConfig(configFile)
@@ -23,8 +24,10 @@ class Homie(object):
         self.fwname = None
         self.fwversion = None
         self.baseTopic = self.config.get("TOPIC", "devices")
-        self.deviceId = self.config.get("DEVICE_ID", "xxxxxxxx")
-        self.deviceName = self.config.get("DEVICE_NAME", "xxxxxxxx")
+        self.deviceId = self.config.get("DEVICE_ID", getenv(
+            "HOMIE_DEVICE_ID", "xxxxxxxx"))
+        self.deviceName = self.config.get("DEVICE_NAME", getenv(
+            "HOMIE_DEVICE_NAME", "xxxxxxxx"))
         self.nodes = []
 
         self.mqtt_topic = "/".join([
@@ -33,7 +36,7 @@ class Homie(object):
         ])
 
         self.mqtt = HomieMqtt(self, self.deviceId)
-        self.host = self.config.get("HOST", "test.mosquitto.org")
+        self.host = self.config.get("HOST")
         self.port = self.config.get("PORT", 1883)
         self.keepalive = self.config.get("KEEPALIVE", 60)
         self.username = self.config.get("USERNAME")
@@ -47,22 +50,20 @@ class Homie(object):
         self.uptimeTimer = HomieTimer(60, self.mqttUptime)
         self.signalTimer = HomieTimer(60, self.mqttSignal)
 
-    def loadConfig(self, configFile=None):
+    def loadConfig(self, configFile):
         config = {}
-
-        if configFile:
-            configFile = os.path.realpath(configFile)
+        configFile = os.path.realpath(configFile)
+        try:
+            fp = open(configFile)
+        except EnvironmentError as e:
+            logger.debug(e)
+        else:
             try:
-                fp = open(configFile)
-            except EnvironmentError as e:
-                logger.debug(e)
-            else:
-                try:
-                    config = json.load(fp)
-                except Exception as e:
-                    raise e
-                finally:
-                    fp.close()
+                config = json.load(fp)
+            except Exception as e:
+                raise e
+            finally:
+                fp.close()
         return config
 
     def Node(self, *args):
