@@ -41,6 +41,7 @@ class Homie(object):
         self.keepalive = self.config.get("KEEPALIVE", 60)
         self.username = self.config.get("USERNAME")
         self.password = self.config.get("PASSWORD")
+        self.ca_certs = self.config.get("CA_CERTS")
 
         if not self.host:
             raise ValueError("No host specified.")
@@ -113,6 +114,9 @@ class Homie(object):
 
         if self.username:
             self.mqtt.username_pw_set(self.username, password=self.password)
+
+        if self.ca_certs:
+            self.mqtt.tls_set(self.ca_certs)
 
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
