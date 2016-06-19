@@ -142,6 +142,7 @@ class Homie(object):
             logger.warn(e)
         else:
             payload = s.getsockname()[0]
+            s.close()
 
         self.mqtt.publish(
             self.mqtt_topic + "/$localip",
