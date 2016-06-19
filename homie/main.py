@@ -2,6 +2,7 @@
 import json
 import time
 import socket
+import atexit
 import logging
 import os.path
 from os import getenv
@@ -16,7 +17,7 @@ class Homie(object):
 
     def __init__(self, configFile):
         super(Homie, self).__init__()
-
+        atexit.register(self.quit)
         self.config = self.loadConfig(configFile)
         logger.debug("config: {}".format(self.config))
 

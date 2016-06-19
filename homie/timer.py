@@ -12,10 +12,12 @@ class HomieTimer(object):
         self.t = t
         self.hFunction = hFunction
         self.thread = Timer(self.t, self.handle_function)
+        self.thread.daemon = True
 
     def handle_function(self):
         self.hFunction()
         self.thread = Timer(self.t, self.handle_function)
+        self.thread.daemon = True
         self.thread.start()
 
     def start(self):

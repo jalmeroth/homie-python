@@ -31,4 +31,3 @@ if __name__ == '__main__':
         main()
     except (KeyboardInterrupt, SystemExit):
         logger.info("Quitting.")
-        Homie.quit()
