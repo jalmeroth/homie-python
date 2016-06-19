@@ -4,6 +4,7 @@
     "KEEPALIVE": 10,
     "USERNAME": "",
     "PASSWORD": "",
+    "CA_CERTS": "",
     "DEVICE_ID": "xxxxxxxx",
     "DEVICE_NAME": "xxxxxxxx",
     "TOPIC": "devices"
