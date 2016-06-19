@@ -36,6 +36,8 @@ class Homie(object):
         self.host = self.config.get("HOST", "test.mosquitto.org")
         self.port = self.config.get("PORT", 1883)
         self.keepalive = self.config.get("KEEPALIVE", 60)
+        self.username = self.config.get("USERNAME")
+        self.password = self.config.get("PASSWORD")
 
         if not self.host:
             raise ValueError("No host specified.")
@@ -107,6 +109,9 @@ class Homie(object):
     def mqttRun(self):
         self.mqtt.will_set(
             self.mqtt_topic + "/$online", payload="false", retain=True)
+        if self.username:
+            logger.debug("{}:{}".format(self.username, self.password))
+            self.mqtt.username_pw_set(self.username, password=self.password)
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
         self.mqtt.subscribe(self.mqtt_topic + "/#", 0)
