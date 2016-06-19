@@ -11,6 +11,18 @@ from homie.timer import HomieTimer
 from homie.node import HomieNode
 logger = logging.getLogger(__name__)
 
+PREF_KEYS = [
+    "HOST",
+    "PORT",
+    "KEEPALIVE",
+    "USERNAME",
+    "PASSWORD",
+    "CA_CERTS",
+    "DEVICE_ID",
+    "DEVICE_NAME",
+    "TOPIC"
+]
+
 
 class Homie(object):
     """docstring for Homie"""
@@ -51,8 +63,8 @@ class Homie(object):
         self.signalTimer = HomieTimer(60, self.mqttSignal)
 
     def overwriteConfigFromEnv(self, config):
-        for key in config:
-            config[key] = getenv("HOMIE_" + key, config[key])
+        for key in PREF_KEYS:
+            config[key] = getenv("HOMIE_" + key, config.get(key))
         return config
 
     def loadConfig(self, configFile):
