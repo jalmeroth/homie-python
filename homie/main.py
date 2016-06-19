@@ -24,10 +24,8 @@ class Homie(object):
         self.fwname = None
         self.fwversion = None
         self.baseTopic = self.config.get("TOPIC", "devices")
-        self.deviceId = self.config.get("DEVICE_ID", getenv(
-            "HOMIE_DEVICE_ID", "xxxxxxxx"))
-        self.deviceName = self.config.get("DEVICE_NAME", getenv(
-            "HOMIE_DEVICE_NAME", "xxxxxxxx"))
+        self.deviceId = self.config.get("DEVICE_ID", "xxxxxxxx")
+        self.deviceName = self.config.get("DEVICE_NAME", "xxxxxxxx")
         self.nodes = []
 
         self.mqtt_topic = "/".join([
@@ -51,6 +49,11 @@ class Homie(object):
         self.uptimeTimer = HomieTimer(60, self.mqttUptime)
         self.signalTimer = HomieTimer(60, self.mqttSignal)
 
+    def overwriteConfigFromEnv(self, config):
+        for key in config:
+            config[key] = getenv("HOMIE_" + key, config[key])
+        return config
+
     def loadConfig(self, configFile):
         config = {}
         configFile = os.path.realpath(configFile)
@@ -65,7 +68,7 @@ class Homie(object):
                 raise e
             finally:
                 fp.close()
-        return config
+        return self.overwriteConfigFromEnv(config)
 
     def Node(self, *args):
         homeNode = HomieNode(*args)
