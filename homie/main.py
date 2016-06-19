@@ -110,9 +110,10 @@ class Homie(object):
     def mqttRun(self):
         self.mqtt.will_set(
             self.mqtt_topic + "/$online", payload="false", retain=True)
+
         if self.username:
-            logger.debug("{}:{}".format(self.username, self.password))
             self.mqtt.username_pw_set(self.username, password=self.password)
+
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
         self.mqtt.subscribe(self.mqtt_topic + "/#", 0)
