@@ -37,10 +37,8 @@ class Homie(object):
 
         self.mqttRun()
 
-        uptime = HomieTimer(60, self.mqttUptime)
-        signal = HomieTimer(60, self.mqttSignal)
-        uptime.start()
-        signal.start()
+        self.uptimeTimer = HomieTimer(60, self.mqttUptime)
+        self.signalTimer = HomieTimer(60, self.mqttSignal)
 
     def Node(self, *args):
         homeNode = HomieNode(*args)
@@ -150,6 +148,8 @@ class Homie(object):
         self.mqttLocalip()
         self.mqttUptime()
         self.mqttSignal()
+        self.uptimeTimer.start()
+        self.signalTimer.start()
 
     @property
     def baseTopic(self):
@@ -166,6 +166,15 @@ class Homie(object):
     @deviceId.setter
     def deviceId(self, deviceId):
         self._deviceId = deviceId
+
+    def quit(self):
+        self.uptimeTimer.cancel()
+        self.signalTimer.cancel()
+        self.mqtt.loop_stop()
+        self.mqtt.disconnect()
+
+    def __del__(self):
+        logger.debug("Quitting.")
 
 
 def main():

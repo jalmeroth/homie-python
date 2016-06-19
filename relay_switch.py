@@ -30,4 +30,5 @@ if __name__ == '__main__':
     try:
         main()
     except (KeyboardInterrupt, SystemExit):
-        logger.warn("Quitting.")
+        logger.info("Quitting.")
+        Homie.quit()
