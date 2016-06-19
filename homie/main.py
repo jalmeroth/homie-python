@@ -134,7 +134,15 @@ class Homie(object):
             payload=payload, retain=True)
 
     def mqttLocalip(self):
-        payload = socket.gethostbyname(socket.gethostname())
+        payload = None
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect((self.host, self.port))
+        except Exception as e:
+            logger.warn(e)
+        else:
+            payload = s.getsockname()[0]
+
         self.mqtt.publish(
             self.mqtt_topic + "/$localip",
             payload=payload, retain=True)
