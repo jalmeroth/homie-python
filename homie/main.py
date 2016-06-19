@@ -170,6 +170,9 @@ class Homie(object):
     def quit(self):
         self.uptimeTimer.cancel()
         self.signalTimer.cancel()
+        self.mqtt.publish(
+            self.mqtt_topic + "/$online",
+            payload="false", retain=True)
         self.mqtt.loop_stop()
         self.mqtt.disconnect()
 
