@@ -11,17 +11,17 @@ from homie.timer import HomieTimer
 from homie.node import HomieNode
 logger = logging.getLogger(__name__)
 
-PREF_KEYS = [
-    "HOST",
-    "PORT",
-    "KEEPALIVE",
-    "USERNAME",
-    "PASSWORD",
-    "CA_CERTS",
-    "DEVICE_ID",
-    "DEVICE_NAME",
-    "TOPIC"
-]
+DEFAULT_PREFS = {
+    "HOST": None,
+    "PORT": 1883,
+    "KEEPALIVE": 60,
+    "USERNAME": None,
+    "PASSWORD": None,
+    "CA_CERTS": None,
+    "DEVICE_ID": "xxxxxxxx",
+    "DEVICE_NAME": "xxxxxxxx",
+    "TOPIC": "devices"
+}
 
 
 class Homie(object):
@@ -36,9 +36,9 @@ class Homie(object):
         self.startTime = time.time()
         self.fwname = None
         self.fwversion = None
-        self.baseTopic = self.config.get("TOPIC", "devices")
-        self.deviceId = self.config.get("DEVICE_ID", "xxxxxxxx")
-        self.deviceName = self.config.get("DEVICE_NAME", "xxxxxxxx")
+        self.baseTopic = self.config.get("TOPIC")
+        self.deviceId = self.config.get("DEVICE_ID")
+        self.deviceName = self.config.get("DEVICE_NAME")
         self.nodes = []
 
         self.mqtt_topic = "/".join([
@@ -48,8 +48,8 @@ class Homie(object):
 
         self.mqtt = HomieMqtt(self, self.deviceId)
         self.host = self.config.get("HOST")
-        self.port = self.config.get("PORT", 1883)
-        self.keepalive = self.config.get("KEEPALIVE", 60)
+        self.port = self.config.get("PORT")
+        self.keepalive = self.config.get("KEEPALIVE")
         self.username = self.config.get("USERNAME")
         self.password = self.config.get("PASSWORD")
         self.ca_certs = self.config.get("CA_CERTS")
@@ -65,8 +65,10 @@ class Homie(object):
         self.signalTimer.start()
 
     def overwriteConfigFromEnv(self, config):
-        for key in PREF_KEYS:
-            config[key] = getenv("HOMIE_" + key, config.get(key))
+        for key in DEFAULT_PREFS:
+            config[key] = getenv(
+                "HOMIE_" + key,
+                config.get(key, DEFAULT_PREFS[key]))
         return config
 
     def loadConfig(self, configFile):
