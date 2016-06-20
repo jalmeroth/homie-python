@@ -61,6 +61,8 @@ class Homie(object):
 
         self.uptimeTimer = HomieTimer(60, self.mqttUptime)
         self.signalTimer = HomieTimer(60, self.mqttSignal)
+        self.uptimeTimer.start()
+        self.signalTimer.start()
 
     def overwriteConfigFromEnv(self, config):
         for key in PREF_KEYS:
@@ -207,8 +209,6 @@ class Homie(object):
         self.mqttLocalip()
         self.mqttUptime()
         self.mqttSignal()
-        self.uptimeTimer.start()
-        self.signalTimer.start()
 
     @property
     def baseTopic(self):
