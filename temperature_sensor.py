@@ -17,7 +17,6 @@ def main():
     Homie.setFirmware("awesome-temperature", "1.0.0")
 
     while True:
-        time.sleep(TEMPERATURE_INTERVAL)
         temperature = 22.0
         humidity = 60.0
 
@@ -26,6 +25,8 @@ def main():
 
         logger.info("Humidity: {:0.2f} %".format(humidity))
         Homie.setNodeProperty(humidityNode, "humidity", humidity, True)
+
+        time.sleep(TEMPERATURE_INTERVAL)
 
 if __name__ == '__main__':
     try:
