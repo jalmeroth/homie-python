@@ -142,7 +142,6 @@ class Homie(object):
 
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
-        self.mqtt.subscribe(self.mqtt_topic + "/#", self.qos)
 
     def mqttNodes(self):
         payload = ",".join(
@@ -197,6 +196,7 @@ class Homie(object):
             payload=payload, retain=True)
 
     def mqttSetup(self):
+        self.mqtt.subscribe(self.mqtt_topic + "/#", self.qos)
         self.mqtt.publish(
             self.mqtt_topic + "/$online",
             payload="true", retain=True)
