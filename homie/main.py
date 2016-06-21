@@ -20,7 +20,8 @@ DEFAULT_PREFS = {
     "CA_CERTS": None,
     "DEVICE_ID": "xxxxxxxx",
     "DEVICE_NAME": "xxxxxxxx",
-    "TOPIC": "devices"
+    "TOPIC": "devices",
+    "QOS": 1
 }
 
 
@@ -53,6 +54,7 @@ class Homie(object):
         self.username = self.config.get("USERNAME")
         self.password = self.config.get("PASSWORD")
         self.ca_certs = self.config.get("CA_CERTS")
+        self.qos = self.config.get("QOS")
 
         if not self.host:
             raise ValueError("No host specified.")
@@ -140,7 +142,7 @@ class Homie(object):
 
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
-        self.mqtt.subscribe(self.mqtt_topic + "/#", 0)
+        self.mqtt.subscribe(self.mqtt_topic + "/#", self.qos)
 
     def mqttNodes(self):
         payload = ",".join(
