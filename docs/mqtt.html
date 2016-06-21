@@ -1,0 +1,407 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module mqtt</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>mqtt</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/jan/R-D/homie-python/homie/mqtt.py">/Users/jan/R-D/homie-python/homie/mqtt.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="paho.mqtt.client.html">paho.mqtt.client</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="paho.mqtt.client.html#Client">paho.mqtt.client.Client</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="mqtt.html#HomieMqtt">HomieMqtt</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="HomieMqtt">class <strong>HomieMqtt</strong></a>(<a href="paho.mqtt.client.html#Client">paho.mqtt.client.Client</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>docstring&nbsp;for&nbsp;<a href="#HomieMqtt">HomieMqtt</a><br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="mqtt.html#HomieMqtt">HomieMqtt</a></dd>
+<dd><a href="paho.mqtt.client.html#Client">paho.mqtt.client.Client</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="HomieMqtt-__del__"><strong>__del__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="HomieMqtt-__init__"><strong>__init__</strong></a>(self, homieObj, deviceId)</dt></dl>
+
+<dl><dt><a name="HomieMqtt-on_connect"><strong>on_connect</strong></a>(self, mqttc, obj, flags, rc)</dt></dl>
+
+<dl><dt><a name="HomieMqtt-on_disconnect"><strong>on_disconnect</strong></a>(self, mqttc, obj, rc)</dt></dl>
+
+<dl><dt><a name="HomieMqtt-on_message"><strong>on_message</strong></a>(self, mqttc, obj, msg)</dt></dl>
+
+<dl><dt><a name="HomieMqtt-on_publish"><strong>on_publish</strong></a>(self, mqttc, obj, mid)</dt></dl>
+
+<dl><dt><a name="HomieMqtt-on_subscribe"><strong>on_subscribe</strong></a>(self, mqttc, obj, mid, granted_qos)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>connected</strong></dt>
+</dl>
+<hr>
+Methods inherited from <a href="paho.mqtt.client.html#Client">paho.mqtt.client.Client</a>:<br>
+<dl><dt><a name="HomieMqtt-connect"><strong>connect</strong></a>(self, host, port<font color="#909090">=1883</font>, keepalive<font color="#909090">=60</font>, bind_address<font color="#909090">=''</font>)</dt><dd><tt>Connect&nbsp;to&nbsp;a&nbsp;remote&nbsp;broker.<br>
+&nbsp;<br>
+host&nbsp;is&nbsp;the&nbsp;hostname&nbsp;or&nbsp;IP&nbsp;address&nbsp;of&nbsp;the&nbsp;remote&nbsp;broker.<br>
+port&nbsp;is&nbsp;the&nbsp;network&nbsp;port&nbsp;of&nbsp;the&nbsp;server&nbsp;host&nbsp;to&nbsp;connect&nbsp;to.&nbsp;Defaults&nbsp;to<br>
+1883.&nbsp;Note&nbsp;that&nbsp;the&nbsp;default&nbsp;port&nbsp;for&nbsp;MQTT&nbsp;over&nbsp;SSL/TLS&nbsp;is&nbsp;8883&nbsp;so&nbsp;if&nbsp;you<br>
+are&nbsp;using&nbsp;<a href="#HomieMqtt-tls_set">tls_set</a>()&nbsp;the&nbsp;port&nbsp;may&nbsp;need&nbsp;providing.<br>
+keepalive:&nbsp;Maximum&nbsp;period&nbsp;in&nbsp;seconds&nbsp;between&nbsp;communications&nbsp;with&nbsp;the<br>
+broker.&nbsp;If&nbsp;no&nbsp;other&nbsp;messages&nbsp;are&nbsp;being&nbsp;exchanged,&nbsp;this&nbsp;controls&nbsp;the<br>
+rate&nbsp;at&nbsp;which&nbsp;the&nbsp;client&nbsp;will&nbsp;send&nbsp;ping&nbsp;messages&nbsp;to&nbsp;the&nbsp;broker.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-connect_async"><strong>connect_async</strong></a>(self, host, port<font color="#909090">=1883</font>, keepalive<font color="#909090">=60</font>, bind_address<font color="#909090">=''</font>)</dt><dd><tt>Connect&nbsp;to&nbsp;a&nbsp;remote&nbsp;broker&nbsp;asynchronously.&nbsp;This&nbsp;is&nbsp;a&nbsp;non-blocking<br>
+connect&nbsp;call&nbsp;that&nbsp;can&nbsp;be&nbsp;used&nbsp;with&nbsp;<a href="#HomieMqtt-loop_start">loop_start</a>()&nbsp;to&nbsp;provide&nbsp;very&nbsp;quick<br>
+start.<br>
+&nbsp;<br>
+host&nbsp;is&nbsp;the&nbsp;hostname&nbsp;or&nbsp;IP&nbsp;address&nbsp;of&nbsp;the&nbsp;remote&nbsp;broker.<br>
+port&nbsp;is&nbsp;the&nbsp;network&nbsp;port&nbsp;of&nbsp;the&nbsp;server&nbsp;host&nbsp;to&nbsp;connect&nbsp;to.&nbsp;Defaults&nbsp;to<br>
+1883.&nbsp;Note&nbsp;that&nbsp;the&nbsp;default&nbsp;port&nbsp;for&nbsp;MQTT&nbsp;over&nbsp;SSL/TLS&nbsp;is&nbsp;8883&nbsp;so&nbsp;if&nbsp;you<br>
+are&nbsp;using&nbsp;<a href="#HomieMqtt-tls_set">tls_set</a>()&nbsp;the&nbsp;port&nbsp;may&nbsp;need&nbsp;providing.<br>
+keepalive:&nbsp;Maximum&nbsp;period&nbsp;in&nbsp;seconds&nbsp;between&nbsp;communications&nbsp;with&nbsp;the<br>
+broker.&nbsp;If&nbsp;no&nbsp;other&nbsp;messages&nbsp;are&nbsp;being&nbsp;exchanged,&nbsp;this&nbsp;controls&nbsp;the<br>
+rate&nbsp;at&nbsp;which&nbsp;the&nbsp;client&nbsp;will&nbsp;send&nbsp;ping&nbsp;messages&nbsp;to&nbsp;the&nbsp;broker.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-connect_srv"><strong>connect_srv</strong></a>(self, domain<font color="#909090">=None</font>, keepalive<font color="#909090">=60</font>, bind_address<font color="#909090">=''</font>)</dt><dd><tt>Connect&nbsp;to&nbsp;a&nbsp;remote&nbsp;broker.<br>
+&nbsp;<br>
+domain&nbsp;is&nbsp;the&nbsp;DNS&nbsp;domain&nbsp;to&nbsp;search&nbsp;for&nbsp;SRV&nbsp;records;&nbsp;if&nbsp;None,<br>
+try&nbsp;to&nbsp;determine&nbsp;local&nbsp;domain&nbsp;name.<br>
+keepalive&nbsp;and&nbsp;bind_address&nbsp;are&nbsp;as&nbsp;for&nbsp;<a href="#HomieMqtt-connect">connect</a>()</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-disconnect"><strong>disconnect</strong></a>(self)</dt><dd><tt>Disconnect&nbsp;a&nbsp;connected&nbsp;client&nbsp;from&nbsp;the&nbsp;broker.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-loop"><strong>loop</strong></a>(self, timeout<font color="#909090">=1.0</font>, max_packets<font color="#909090">=1</font>)</dt><dd><tt>Process&nbsp;network&nbsp;events.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;must&nbsp;be&nbsp;called&nbsp;regularly&nbsp;to&nbsp;ensure&nbsp;communication&nbsp;with&nbsp;the<br>
+broker&nbsp;is&nbsp;carried&nbsp;out.&nbsp;It&nbsp;calls&nbsp;select()&nbsp;on&nbsp;the&nbsp;network&nbsp;socket&nbsp;to&nbsp;wait<br>
+for&nbsp;network&nbsp;events.&nbsp;If&nbsp;incoming&nbsp;data&nbsp;is&nbsp;present&nbsp;it&nbsp;will&nbsp;then&nbsp;be<br>
+processed.&nbsp;Outgoing&nbsp;commands,&nbsp;from&nbsp;e.g.&nbsp;<a href="#HomieMqtt-publish">publish</a>(),&nbsp;are&nbsp;normally&nbsp;sent<br>
+immediately&nbsp;that&nbsp;their&nbsp;function&nbsp;is&nbsp;called,&nbsp;but&nbsp;this&nbsp;is&nbsp;not&nbsp;always<br>
+possible.&nbsp;<a href="#HomieMqtt-loop">loop</a>()&nbsp;will&nbsp;also&nbsp;attempt&nbsp;to&nbsp;send&nbsp;any&nbsp;remaining&nbsp;outgoing<br>
+messages,&nbsp;which&nbsp;also&nbsp;includes&nbsp;commands&nbsp;that&nbsp;are&nbsp;part&nbsp;of&nbsp;the&nbsp;flow&nbsp;for<br>
+messages&nbsp;with&nbsp;QoS&gt;0.<br>
+&nbsp;<br>
+timeout:&nbsp;The&nbsp;time&nbsp;in&nbsp;seconds&nbsp;to&nbsp;wait&nbsp;for&nbsp;incoming/outgoing&nbsp;network<br>
+&nbsp;&nbsp;traffic&nbsp;before&nbsp;timing&nbsp;out&nbsp;and&nbsp;returning.<br>
+max_packets:&nbsp;Not&nbsp;currently&nbsp;used.<br>
+&nbsp;<br>
+Returns&nbsp;MQTT_ERR_SUCCESS&nbsp;on&nbsp;success.<br>
+Returns&nbsp;&gt;0&nbsp;on&nbsp;error.<br>
+&nbsp;<br>
+A&nbsp;ValueError&nbsp;will&nbsp;be&nbsp;raised&nbsp;if&nbsp;timeout&nbsp;&lt;&nbsp;0</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-loop_forever"><strong>loop_forever</strong></a>(self, timeout<font color="#909090">=1.0</font>, max_packets<font color="#909090">=1</font>, retry_first_connection<font color="#909090">=False</font>)</dt><dd><tt>This&nbsp;function&nbsp;call&nbsp;<a href="#HomieMqtt-loop">loop</a>()&nbsp;for&nbsp;you&nbsp;in&nbsp;an&nbsp;infinite&nbsp;blocking&nbsp;loop.&nbsp;It<br>
+is&nbsp;useful&nbsp;for&nbsp;the&nbsp;case&nbsp;where&nbsp;you&nbsp;only&nbsp;want&nbsp;to&nbsp;run&nbsp;the&nbsp;MQTT&nbsp;client&nbsp;loop<br>
+in&nbsp;your&nbsp;program.<br>
+&nbsp;<br>
+<a href="#HomieMqtt-loop_forever">loop_forever</a>()&nbsp;will&nbsp;handle&nbsp;reconnecting&nbsp;for&nbsp;you.&nbsp;If&nbsp;you&nbsp;call<br>
+<a href="#HomieMqtt-disconnect">disconnect</a>()&nbsp;in&nbsp;a&nbsp;callback&nbsp;it&nbsp;will&nbsp;return.<br>
+&nbsp;<br>
+&nbsp;<br>
+timeout:&nbsp;The&nbsp;time&nbsp;in&nbsp;seconds&nbsp;to&nbsp;wait&nbsp;for&nbsp;incoming/outgoing&nbsp;network<br>
+&nbsp;&nbsp;traffic&nbsp;before&nbsp;timing&nbsp;out&nbsp;and&nbsp;returning.<br>
+max_packets:&nbsp;Not&nbsp;currently&nbsp;used.<br>
+retry_first_connection:&nbsp;Should&nbsp;the&nbsp;first&nbsp;connection&nbsp;attempt&nbsp;be&nbsp;retried&nbsp;on&nbsp;failure.<br>
+&nbsp;<br>
+Raises&nbsp;socket.error&nbsp;on&nbsp;first&nbsp;connection&nbsp;failures&nbsp;unless&nbsp;retry_first_connection=True</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-loop_misc"><strong>loop_misc</strong></a>(self)</dt><dd><tt>Process&nbsp;miscellaneous&nbsp;network&nbsp;events.&nbsp;Use&nbsp;in&nbsp;place&nbsp;of&nbsp;calling&nbsp;<a href="#HomieMqtt-loop">loop</a>()&nbsp;if&nbsp;you<br>
+wish&nbsp;to&nbsp;call&nbsp;select()&nbsp;or&nbsp;equivalent&nbsp;on.<br>
+&nbsp;<br>
+Do&nbsp;not&nbsp;use&nbsp;if&nbsp;you&nbsp;are&nbsp;using&nbsp;the&nbsp;threaded&nbsp;interface&nbsp;<a href="#HomieMqtt-loop_start">loop_start</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-loop_read"><strong>loop_read</strong></a>(self, max_packets<font color="#909090">=1</font>)</dt><dd><tt>Process&nbsp;read&nbsp;network&nbsp;events.&nbsp;Use&nbsp;in&nbsp;place&nbsp;of&nbsp;calling&nbsp;<a href="#HomieMqtt-loop">loop</a>()&nbsp;if&nbsp;you<br>
+wish&nbsp;to&nbsp;handle&nbsp;your&nbsp;client&nbsp;reads&nbsp;as&nbsp;part&nbsp;of&nbsp;your&nbsp;own&nbsp;application.<br>
+&nbsp;<br>
+Use&nbsp;<a href="#HomieMqtt-socket">socket</a>()&nbsp;to&nbsp;obtain&nbsp;the&nbsp;client&nbsp;socket&nbsp;to&nbsp;call&nbsp;select()&nbsp;or&nbsp;equivalent<br>
+on.<br>
+&nbsp;<br>
+Do&nbsp;not&nbsp;use&nbsp;if&nbsp;you&nbsp;are&nbsp;using&nbsp;the&nbsp;threaded&nbsp;interface&nbsp;<a href="#HomieMqtt-loop_start">loop_start</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-loop_start"><strong>loop_start</strong></a>(self)</dt><dd><tt>This&nbsp;is&nbsp;part&nbsp;of&nbsp;the&nbsp;threaded&nbsp;client&nbsp;interface.&nbsp;Call&nbsp;this&nbsp;once&nbsp;to<br>
+start&nbsp;a&nbsp;new&nbsp;thread&nbsp;to&nbsp;process&nbsp;network&nbsp;traffic.&nbsp;This&nbsp;provides&nbsp;an<br>
+alternative&nbsp;to&nbsp;repeatedly&nbsp;calling&nbsp;<a href="#HomieMqtt-loop">loop</a>()&nbsp;yourself.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-loop_stop"><strong>loop_stop</strong></a>(self, force<font color="#909090">=False</font>)</dt><dd><tt>This&nbsp;is&nbsp;part&nbsp;of&nbsp;the&nbsp;threaded&nbsp;client&nbsp;interface.&nbsp;Call&nbsp;this&nbsp;once&nbsp;to<br>
+stop&nbsp;the&nbsp;network&nbsp;thread&nbsp;previously&nbsp;created&nbsp;with&nbsp;<a href="#HomieMqtt-loop_start">loop_start</a>().&nbsp;This&nbsp;call<br>
+will&nbsp;block&nbsp;until&nbsp;the&nbsp;network&nbsp;thread&nbsp;finishes.<br>
+&nbsp;<br>
+The&nbsp;force&nbsp;parameter&nbsp;is&nbsp;currently&nbsp;ignored.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-loop_write"><strong>loop_write</strong></a>(self, max_packets<font color="#909090">=1</font>)</dt><dd><tt>Process&nbsp;read&nbsp;network&nbsp;events.&nbsp;Use&nbsp;in&nbsp;place&nbsp;of&nbsp;calling&nbsp;<a href="#HomieMqtt-loop">loop</a>()&nbsp;if&nbsp;you<br>
+wish&nbsp;to&nbsp;handle&nbsp;your&nbsp;client&nbsp;reads&nbsp;as&nbsp;part&nbsp;of&nbsp;your&nbsp;own&nbsp;application.<br>
+&nbsp;<br>
+Use&nbsp;<a href="#HomieMqtt-socket">socket</a>()&nbsp;to&nbsp;obtain&nbsp;the&nbsp;client&nbsp;socket&nbsp;to&nbsp;call&nbsp;select()&nbsp;or&nbsp;equivalent<br>
+on.<br>
+&nbsp;<br>
+Use&nbsp;<a href="#HomieMqtt-want_write">want_write</a>()&nbsp;to&nbsp;determine&nbsp;if&nbsp;there&nbsp;is&nbsp;data&nbsp;waiting&nbsp;to&nbsp;be&nbsp;written.<br>
+&nbsp;<br>
+Do&nbsp;not&nbsp;use&nbsp;if&nbsp;you&nbsp;are&nbsp;using&nbsp;the&nbsp;threaded&nbsp;interface&nbsp;<a href="#HomieMqtt-loop_start">loop_start</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-max_inflight_messages_set"><strong>max_inflight_messages_set</strong></a>(self, inflight)</dt><dd><tt>Set&nbsp;the&nbsp;maximum&nbsp;number&nbsp;of&nbsp;messages&nbsp;with&nbsp;QoS&gt;0&nbsp;that&nbsp;can&nbsp;be&nbsp;part&nbsp;way<br>
+through&nbsp;their&nbsp;network&nbsp;flow&nbsp;at&nbsp;once.&nbsp;Defaults&nbsp;to&nbsp;20.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-max_queued_messages_set"><strong>max_queued_messages_set</strong></a>(self, queue_size)</dt><dd><tt>Set&nbsp;the&nbsp;maximum&nbsp;number&nbsp;of&nbsp;messages&nbsp;in&nbsp;the&nbsp;outgoing&nbsp;message&nbsp;queue.<br>
+0&nbsp;means&nbsp;unlimited.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-message_callback_add"><strong>message_callback_add</strong></a>(self, sub, callback)</dt><dd><tt>Register&nbsp;a&nbsp;message&nbsp;callback&nbsp;for&nbsp;a&nbsp;specific&nbsp;topic.<br>
+Messages&nbsp;that&nbsp;match&nbsp;'sub'&nbsp;will&nbsp;be&nbsp;passed&nbsp;to&nbsp;'callback'.&nbsp;Any<br>
+non-matching&nbsp;messages&nbsp;will&nbsp;be&nbsp;passed&nbsp;to&nbsp;the&nbsp;default&nbsp;on_message<br>
+callback.<br>
+&nbsp;<br>
+Call&nbsp;multiple&nbsp;times&nbsp;with&nbsp;different&nbsp;'sub'&nbsp;to&nbsp;define&nbsp;multiple&nbsp;topic<br>
+specific&nbsp;callbacks.<br>
+&nbsp;<br>
+Topic&nbsp;specific&nbsp;callbacks&nbsp;may&nbsp;be&nbsp;removed&nbsp;with<br>
+<a href="#HomieMqtt-message_callback_remove">message_callback_remove</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-message_callback_remove"><strong>message_callback_remove</strong></a>(self, sub)</dt><dd><tt>Remove&nbsp;a&nbsp;message&nbsp;callback&nbsp;previously&nbsp;registered&nbsp;with<br>
+<a href="#HomieMqtt-message_callback_add">message_callback_add</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-message_retry_set"><strong>message_retry_set</strong></a>(self, retry)</dt><dd><tt>Set&nbsp;the&nbsp;timeout&nbsp;in&nbsp;seconds&nbsp;before&nbsp;a&nbsp;message&nbsp;with&nbsp;QoS&gt;0&nbsp;is&nbsp;retried.<br>
+20&nbsp;seconds&nbsp;by&nbsp;default.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-publish"><strong>publish</strong></a>(self, topic, payload<font color="#909090">=None</font>, qos<font color="#909090">=0</font>, retain<font color="#909090">=False</font>)</dt><dd><tt>Publish&nbsp;a&nbsp;message&nbsp;on&nbsp;a&nbsp;topic.<br>
+&nbsp;<br>
+This&nbsp;causes&nbsp;a&nbsp;message&nbsp;to&nbsp;be&nbsp;sent&nbsp;to&nbsp;the&nbsp;broker&nbsp;and&nbsp;subsequently&nbsp;from<br>
+the&nbsp;broker&nbsp;to&nbsp;any&nbsp;clients&nbsp;subscribing&nbsp;to&nbsp;matching&nbsp;topics.<br>
+&nbsp;<br>
+topic:&nbsp;The&nbsp;topic&nbsp;that&nbsp;the&nbsp;message&nbsp;should&nbsp;be&nbsp;published&nbsp;on.<br>
+payload:&nbsp;The&nbsp;actual&nbsp;message&nbsp;to&nbsp;send.&nbsp;If&nbsp;not&nbsp;given,&nbsp;or&nbsp;set&nbsp;to&nbsp;None&nbsp;a<br>
+zero&nbsp;length&nbsp;message&nbsp;will&nbsp;be&nbsp;used.&nbsp;Passing&nbsp;an&nbsp;int&nbsp;or&nbsp;float&nbsp;will&nbsp;result<br>
+in&nbsp;the&nbsp;payload&nbsp;being&nbsp;converted&nbsp;to&nbsp;a&nbsp;string&nbsp;representing&nbsp;that&nbsp;number.&nbsp;If<br>
+you&nbsp;wish&nbsp;to&nbsp;send&nbsp;a&nbsp;true&nbsp;int/float,&nbsp;use&nbsp;struct.pack()&nbsp;to&nbsp;create&nbsp;the<br>
+payload&nbsp;you&nbsp;require.<br>
+qos:&nbsp;The&nbsp;quality&nbsp;of&nbsp;service&nbsp;level&nbsp;to&nbsp;use.<br>
+retain:&nbsp;If&nbsp;set&nbsp;to&nbsp;true,&nbsp;the&nbsp;message&nbsp;will&nbsp;be&nbsp;set&nbsp;as&nbsp;the&nbsp;"last&nbsp;known<br>
+good"/retained&nbsp;message&nbsp;for&nbsp;the&nbsp;topic.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;MQTTMessageInfo&nbsp;class,&nbsp;which&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;determine&nbsp;whether<br>
+the&nbsp;message&nbsp;has&nbsp;been&nbsp;delivered&nbsp;(using&nbsp;info.is_published())&nbsp;or&nbsp;to&nbsp;block<br>
+waiting&nbsp;for&nbsp;the&nbsp;message&nbsp;to&nbsp;be&nbsp;delivered&nbsp;(info.wait_for_publish()).&nbsp;The<br>
+message&nbsp;ID&nbsp;and&nbsp;return&nbsp;code&nbsp;of&nbsp;the&nbsp;<a href="#HomieMqtt-publish">publish</a>()&nbsp;call&nbsp;can&nbsp;be&nbsp;found&nbsp;at<br>
+info.mid&nbsp;and&nbsp;info.rc.<br>
+&nbsp;<br>
+For&nbsp;backwards&nbsp;compatibility,&nbsp;the&nbsp;MQTTMessageInfo&nbsp;class&nbsp;is&nbsp;iterable&nbsp;so<br>
+the&nbsp;old&nbsp;construct&nbsp;of&nbsp;(rc,&nbsp;mid)&nbsp;=&nbsp;client.<a href="#HomieMqtt-publish">publish</a>(...)&nbsp;is&nbsp;still&nbsp;valid.<br>
+&nbsp;<br>
+rc&nbsp;is&nbsp;MQTT_ERR_SUCCESS&nbsp;to&nbsp;indicate&nbsp;success&nbsp;or&nbsp;MQTT_ERR_NO_CONN&nbsp;if&nbsp;the<br>
+client&nbsp;is&nbsp;not&nbsp;currently&nbsp;connected.&nbsp;&nbsp;mid&nbsp;is&nbsp;the&nbsp;message&nbsp;ID&nbsp;for&nbsp;the<br>
+publish&nbsp;request.&nbsp;The&nbsp;mid&nbsp;value&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;track&nbsp;the&nbsp;publish&nbsp;request<br>
+by&nbsp;checking&nbsp;against&nbsp;the&nbsp;mid&nbsp;argument&nbsp;in&nbsp;the&nbsp;<a href="#HomieMqtt-on_publish">on_publish</a>()&nbsp;callback&nbsp;if&nbsp;it<br>
+is&nbsp;defined.<br>
+&nbsp;<br>
+A&nbsp;ValueError&nbsp;will&nbsp;be&nbsp;raised&nbsp;if&nbsp;topic&nbsp;is&nbsp;None,&nbsp;has&nbsp;zero&nbsp;length&nbsp;or&nbsp;is<br>
+invalid&nbsp;(contains&nbsp;a&nbsp;wildcard),&nbsp;if&nbsp;qos&nbsp;is&nbsp;not&nbsp;one&nbsp;of&nbsp;0,&nbsp;1&nbsp;or&nbsp;2,&nbsp;or&nbsp;if<br>
+the&nbsp;length&nbsp;of&nbsp;the&nbsp;payload&nbsp;is&nbsp;greater&nbsp;than&nbsp;268435455&nbsp;bytes.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-reconnect"><strong>reconnect</strong></a>(self)</dt><dd><tt>Reconnect&nbsp;the&nbsp;client&nbsp;after&nbsp;a&nbsp;disconnect.&nbsp;Can&nbsp;only&nbsp;be&nbsp;called&nbsp;after<br>
+<a href="#HomieMqtt-connect">connect</a>()/<a href="#HomieMqtt-connect_async">connect_async</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-reinitialise"><strong>reinitialise</strong></a>(self, client_id<font color="#909090">=''</font>, clean_session<font color="#909090">=True</font>, userdata<font color="#909090">=None</font>)</dt></dl>
+
+<dl><dt><a name="HomieMqtt-socket"><strong>socket</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;socket&nbsp;or&nbsp;ssl&nbsp;object&nbsp;for&nbsp;this&nbsp;client.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-subscribe"><strong>subscribe</strong></a>(self, topic, qos<font color="#909090">=0</font>)</dt><dd><tt>Subscribe&nbsp;the&nbsp;client&nbsp;to&nbsp;one&nbsp;or&nbsp;more&nbsp;topics.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;may&nbsp;be&nbsp;called&nbsp;in&nbsp;three&nbsp;different&nbsp;ways:<br>
+&nbsp;<br>
+Simple&nbsp;string&nbsp;and&nbsp;integer<br>
+-------------------------<br>
+e.g.&nbsp;<a href="#HomieMqtt-subscribe">subscribe</a>("my/topic",&nbsp;2)<br>
+&nbsp;<br>
+topic:&nbsp;A&nbsp;string&nbsp;specifying&nbsp;the&nbsp;subscription&nbsp;topic&nbsp;to&nbsp;subscribe&nbsp;to.<br>
+qos:&nbsp;The&nbsp;desired&nbsp;quality&nbsp;of&nbsp;service&nbsp;level&nbsp;for&nbsp;the&nbsp;subscription.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Defaults&nbsp;to&nbsp;0.<br>
+&nbsp;<br>
+String&nbsp;and&nbsp;integer&nbsp;tuple<br>
+------------------------<br>
+e.g.&nbsp;<a href="#HomieMqtt-subscribe">subscribe</a>(("my/topic",&nbsp;1))<br>
+&nbsp;<br>
+topic:&nbsp;A&nbsp;tuple&nbsp;of&nbsp;(topic,&nbsp;qos).&nbsp;Both&nbsp;topic&nbsp;and&nbsp;qos&nbsp;must&nbsp;be&nbsp;present&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;tuple.<br>
+qos:&nbsp;Not&nbsp;used.<br>
+&nbsp;<br>
+List&nbsp;of&nbsp;string&nbsp;and&nbsp;integer&nbsp;tuples<br>
+------------------------<br>
+e.g.&nbsp;<a href="#HomieMqtt-subscribe">subscribe</a>([("my/topic",&nbsp;0),&nbsp;("another/topic",&nbsp;2)])<br>
+&nbsp;<br>
+This&nbsp;allows&nbsp;multiple&nbsp;topic&nbsp;subscriptions&nbsp;in&nbsp;a&nbsp;single&nbsp;SUBSCRIPTION<br>
+command,&nbsp;which&nbsp;is&nbsp;more&nbsp;efficient&nbsp;than&nbsp;using&nbsp;multiple&nbsp;calls&nbsp;to<br>
+<a href="#HomieMqtt-subscribe">subscribe</a>().<br>
+&nbsp;<br>
+topic:&nbsp;A&nbsp;list&nbsp;of&nbsp;tuple&nbsp;of&nbsp;format&nbsp;(topic,&nbsp;qos).&nbsp;Both&nbsp;topic&nbsp;and&nbsp;qos&nbsp;must<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;present&nbsp;in&nbsp;all&nbsp;of&nbsp;the&nbsp;tuples.<br>
+qos:&nbsp;Not&nbsp;used.<br>
+&nbsp;<br>
+The&nbsp;function&nbsp;returns&nbsp;a&nbsp;tuple&nbsp;(result,&nbsp;mid),&nbsp;where&nbsp;result&nbsp;is<br>
+MQTT_ERR_SUCCESS&nbsp;to&nbsp;indicate&nbsp;success&nbsp;or&nbsp;(MQTT_ERR_NO_CONN,&nbsp;None)&nbsp;if&nbsp;the<br>
+client&nbsp;is&nbsp;not&nbsp;currently&nbsp;connected.&nbsp;&nbsp;mid&nbsp;is&nbsp;the&nbsp;message&nbsp;ID&nbsp;for&nbsp;the<br>
+subscribe&nbsp;request.&nbsp;The&nbsp;mid&nbsp;value&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;track&nbsp;the&nbsp;subscribe<br>
+request&nbsp;by&nbsp;checking&nbsp;against&nbsp;the&nbsp;mid&nbsp;argument&nbsp;in&nbsp;the&nbsp;<a href="#HomieMqtt-on_subscribe">on_subscribe</a>()<br>
+callback&nbsp;if&nbsp;it&nbsp;is&nbsp;defined.<br>
+&nbsp;<br>
+Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;qos&nbsp;is&nbsp;not&nbsp;0,&nbsp;1&nbsp;or&nbsp;2,&nbsp;or&nbsp;if&nbsp;topic&nbsp;is&nbsp;None&nbsp;or&nbsp;has<br>
+zero&nbsp;string&nbsp;length,&nbsp;or&nbsp;if&nbsp;topic&nbsp;is&nbsp;not&nbsp;a&nbsp;string,&nbsp;tuple&nbsp;or&nbsp;list.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-tls_insecure_set"><strong>tls_insecure_set</strong></a>(self, value)</dt><dd><tt>Configure&nbsp;verification&nbsp;of&nbsp;the&nbsp;server&nbsp;hostname&nbsp;in&nbsp;the&nbsp;server&nbsp;certificate.<br>
+&nbsp;<br>
+If&nbsp;value&nbsp;is&nbsp;set&nbsp;to&nbsp;true,&nbsp;it&nbsp;is&nbsp;impossible&nbsp;to&nbsp;guarantee&nbsp;that&nbsp;the&nbsp;host<br>
+you&nbsp;are&nbsp;connecting&nbsp;to&nbsp;is&nbsp;not&nbsp;impersonating&nbsp;your&nbsp;server.&nbsp;This&nbsp;can&nbsp;be<br>
+useful&nbsp;in&nbsp;initial&nbsp;server&nbsp;testing,&nbsp;but&nbsp;makes&nbsp;it&nbsp;possible&nbsp;for&nbsp;a&nbsp;malicious<br>
+third&nbsp;party&nbsp;to&nbsp;impersonate&nbsp;your&nbsp;server&nbsp;through&nbsp;DNS&nbsp;spoofing,&nbsp;for<br>
+example.<br>
+&nbsp;<br>
+Do&nbsp;not&nbsp;use&nbsp;this&nbsp;function&nbsp;in&nbsp;a&nbsp;real&nbsp;system.&nbsp;Setting&nbsp;value&nbsp;to&nbsp;true&nbsp;means<br>
+there&nbsp;is&nbsp;no&nbsp;point&nbsp;using&nbsp;encryption.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;called&nbsp;before&nbsp;<a href="#HomieMqtt-connect">connect</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-tls_set"><strong>tls_set</strong></a>(self, ca_certs, certfile<font color="#909090">=None</font>, keyfile<font color="#909090">=None</font>, cert_reqs<font color="#909090">=2</font>, tls_version<font color="#909090">=3</font>, ciphers<font color="#909090">=None</font>)</dt><dd><tt>Configure&nbsp;network&nbsp;encryption&nbsp;and&nbsp;authentication&nbsp;options.&nbsp;Enables&nbsp;SSL/TLS&nbsp;support.<br>
+&nbsp;<br>
+ca_certs&nbsp;:&nbsp;a&nbsp;string&nbsp;path&nbsp;to&nbsp;the&nbsp;Certificate&nbsp;Authority&nbsp;certificate&nbsp;files<br>
+that&nbsp;are&nbsp;to&nbsp;be&nbsp;treated&nbsp;as&nbsp;trusted&nbsp;by&nbsp;this&nbsp;client.&nbsp;If&nbsp;this&nbsp;is&nbsp;the&nbsp;only<br>
+option&nbsp;given&nbsp;then&nbsp;the&nbsp;client&nbsp;will&nbsp;operate&nbsp;in&nbsp;a&nbsp;similar&nbsp;manner&nbsp;to&nbsp;a&nbsp;web<br>
+browser.&nbsp;That&nbsp;is&nbsp;to&nbsp;say&nbsp;it&nbsp;will&nbsp;require&nbsp;the&nbsp;broker&nbsp;to&nbsp;have&nbsp;a<br>
+certificate&nbsp;signed&nbsp;by&nbsp;the&nbsp;Certificate&nbsp;Authorities&nbsp;in&nbsp;ca_certs&nbsp;and&nbsp;will<br>
+communicate&nbsp;using&nbsp;TLS&nbsp;v1,&nbsp;but&nbsp;will&nbsp;not&nbsp;attempt&nbsp;any&nbsp;form&nbsp;of<br>
+authentication.&nbsp;This&nbsp;provides&nbsp;basic&nbsp;network&nbsp;encryption&nbsp;but&nbsp;may&nbsp;not&nbsp;be<br>
+sufficient&nbsp;depending&nbsp;on&nbsp;how&nbsp;the&nbsp;broker&nbsp;is&nbsp;configured.<br>
+&nbsp;<br>
+certfile&nbsp;and&nbsp;keyfile&nbsp;are&nbsp;strings&nbsp;pointing&nbsp;to&nbsp;the&nbsp;PEM&nbsp;encoded&nbsp;client<br>
+certificate&nbsp;and&nbsp;private&nbsp;keys&nbsp;respectively.&nbsp;If&nbsp;these&nbsp;arguments&nbsp;are&nbsp;not<br>
+None&nbsp;then&nbsp;they&nbsp;will&nbsp;be&nbsp;used&nbsp;as&nbsp;client&nbsp;information&nbsp;for&nbsp;TLS&nbsp;based<br>
+authentication.&nbsp;&nbsp;Support&nbsp;for&nbsp;this&nbsp;feature&nbsp;is&nbsp;broker&nbsp;dependent.&nbsp;Note<br>
+that&nbsp;if&nbsp;either&nbsp;of&nbsp;these&nbsp;files&nbsp;in&nbsp;encrypted&nbsp;and&nbsp;needs&nbsp;a&nbsp;password&nbsp;to<br>
+decrypt&nbsp;it,&nbsp;Python&nbsp;will&nbsp;ask&nbsp;for&nbsp;the&nbsp;password&nbsp;at&nbsp;the&nbsp;command&nbsp;line.&nbsp;It&nbsp;is<br>
+not&nbsp;currently&nbsp;possible&nbsp;to&nbsp;define&nbsp;a&nbsp;callback&nbsp;to&nbsp;provide&nbsp;the&nbsp;password.<br>
+&nbsp;<br>
+cert_reqs&nbsp;allows&nbsp;the&nbsp;certificate&nbsp;requirements&nbsp;that&nbsp;the&nbsp;client&nbsp;imposes<br>
+on&nbsp;the&nbsp;broker&nbsp;to&nbsp;be&nbsp;changed.&nbsp;By&nbsp;default&nbsp;this&nbsp;is&nbsp;ssl.CERT_REQUIRED,<br>
+which&nbsp;means&nbsp;that&nbsp;the&nbsp;broker&nbsp;must&nbsp;provide&nbsp;a&nbsp;certificate.&nbsp;See&nbsp;the&nbsp;ssl<br>
+pydoc&nbsp;for&nbsp;more&nbsp;information&nbsp;on&nbsp;this&nbsp;parameter.<br>
+&nbsp;<br>
+tls_version&nbsp;allows&nbsp;the&nbsp;version&nbsp;of&nbsp;the&nbsp;SSL/TLS&nbsp;protocol&nbsp;used&nbsp;to&nbsp;be<br>
+specified.&nbsp;By&nbsp;default&nbsp;TLS&nbsp;v1&nbsp;is&nbsp;used.&nbsp;Previous&nbsp;versions&nbsp;(all&nbsp;versions<br>
+beginning&nbsp;with&nbsp;SSL)&nbsp;are&nbsp;possible&nbsp;but&nbsp;not&nbsp;recommended&nbsp;due&nbsp;to&nbsp;possible<br>
+security&nbsp;problems.<br>
+&nbsp;<br>
+ciphers&nbsp;is&nbsp;a&nbsp;string&nbsp;specifying&nbsp;which&nbsp;encryption&nbsp;ciphers&nbsp;are&nbsp;allowable<br>
+for&nbsp;this&nbsp;connection,&nbsp;or&nbsp;None&nbsp;to&nbsp;use&nbsp;the&nbsp;defaults.&nbsp;See&nbsp;the&nbsp;ssl&nbsp;pydoc&nbsp;for<br>
+more&nbsp;information.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;called&nbsp;before&nbsp;<a href="#HomieMqtt-connect">connect</a>()&nbsp;or&nbsp;<a href="#HomieMqtt-connect_async">connect_async</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-unsubscribe"><strong>unsubscribe</strong></a>(self, topic)</dt><dd><tt>Unsubscribe&nbsp;the&nbsp;client&nbsp;from&nbsp;one&nbsp;or&nbsp;more&nbsp;topics.<br>
+&nbsp;<br>
+topic:&nbsp;A&nbsp;single&nbsp;string,&nbsp;or&nbsp;list&nbsp;of&nbsp;strings&nbsp;that&nbsp;are&nbsp;the&nbsp;subscription<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;topics&nbsp;to&nbsp;unsubscribe&nbsp;from.<br>
+&nbsp;<br>
+Returns&nbsp;a&nbsp;tuple&nbsp;(result,&nbsp;mid),&nbsp;where&nbsp;result&nbsp;is&nbsp;MQTT_ERR_SUCCESS<br>
+to&nbsp;indicate&nbsp;success&nbsp;or&nbsp;(MQTT_ERR_NO_CONN,&nbsp;None)&nbsp;if&nbsp;the&nbsp;client&nbsp;is&nbsp;not<br>
+currently&nbsp;connected.<br>
+mid&nbsp;is&nbsp;the&nbsp;message&nbsp;ID&nbsp;for&nbsp;the&nbsp;unsubscribe&nbsp;request.&nbsp;The&nbsp;mid&nbsp;value&nbsp;can&nbsp;be<br>
+used&nbsp;to&nbsp;track&nbsp;the&nbsp;unsubscribe&nbsp;request&nbsp;by&nbsp;checking&nbsp;against&nbsp;the&nbsp;mid<br>
+argument&nbsp;in&nbsp;the&nbsp;<a href="#HomieMqtt-on_unsubscribe">on_unsubscribe</a>()&nbsp;callback&nbsp;if&nbsp;it&nbsp;is&nbsp;defined.<br>
+&nbsp;<br>
+Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;topic&nbsp;is&nbsp;None&nbsp;or&nbsp;has&nbsp;zero&nbsp;string&nbsp;length,&nbsp;or&nbsp;is<br>
+not&nbsp;a&nbsp;string&nbsp;or&nbsp;list.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-user_data_set"><strong>user_data_set</strong></a>(self, userdata)</dt><dd><tt>Set&nbsp;the&nbsp;user&nbsp;data&nbsp;variable&nbsp;passed&nbsp;to&nbsp;callbacks.&nbsp;May&nbsp;be&nbsp;any&nbsp;data&nbsp;type.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-username_pw_set"><strong>username_pw_set</strong></a>(self, username, password<font color="#909090">=None</font>)</dt><dd><tt>Set&nbsp;a&nbsp;username&nbsp;and&nbsp;optionally&nbsp;a&nbsp;password&nbsp;for&nbsp;broker&nbsp;authentication.<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;called&nbsp;before&nbsp;<a href="#HomieMqtt-connect">connect</a>()&nbsp;to&nbsp;have&nbsp;any&nbsp;effect.<br>
+Requires&nbsp;a&nbsp;broker&nbsp;that&nbsp;supports&nbsp;MQTT&nbsp;v3.1.<br>
+&nbsp;<br>
+username:&nbsp;The&nbsp;username&nbsp;to&nbsp;authenticate&nbsp;with.&nbsp;Need&nbsp;have&nbsp;no&nbsp;relationship&nbsp;to&nbsp;the&nbsp;client&nbsp;id.<br>
+password:&nbsp;The&nbsp;password&nbsp;to&nbsp;authenticate&nbsp;with.&nbsp;Optional,&nbsp;set&nbsp;to&nbsp;None&nbsp;if&nbsp;not&nbsp;required.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-want_write"><strong>want_write</strong></a>(self)</dt><dd><tt>Call&nbsp;to&nbsp;determine&nbsp;if&nbsp;there&nbsp;is&nbsp;network&nbsp;data&nbsp;waiting&nbsp;to&nbsp;be&nbsp;written.<br>
+Useful&nbsp;if&nbsp;you&nbsp;are&nbsp;calling&nbsp;select()&nbsp;yourself&nbsp;rather&nbsp;than&nbsp;using&nbsp;<a href="#HomieMqtt-loop">loop</a>().</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-will_clear"><strong>will_clear</strong></a>(self)</dt><dd><tt>Removes&nbsp;a&nbsp;will&nbsp;that&nbsp;was&nbsp;previously&nbsp;configured&nbsp;with&nbsp;<a href="#HomieMqtt-will_set">will_set</a>().<br>
+&nbsp;<br>
+Must&nbsp;be&nbsp;called&nbsp;before&nbsp;<a href="#HomieMqtt-connect">connect</a>()&nbsp;to&nbsp;have&nbsp;any&nbsp;effect.</tt></dd></dl>
+
+<dl><dt><a name="HomieMqtt-will_set"><strong>will_set</strong></a>(self, topic, payload<font color="#909090">=None</font>, qos<font color="#909090">=0</font>, retain<font color="#909090">=False</font>)</dt><dd><tt>Set&nbsp;a&nbsp;Will&nbsp;to&nbsp;be&nbsp;sent&nbsp;by&nbsp;the&nbsp;broker&nbsp;in&nbsp;case&nbsp;the&nbsp;client&nbsp;disconnects&nbsp;unexpectedly.<br>
+&nbsp;<br>
+This&nbsp;must&nbsp;be&nbsp;called&nbsp;before&nbsp;<a href="#HomieMqtt-connect">connect</a>()&nbsp;to&nbsp;have&nbsp;any&nbsp;effect.<br>
+&nbsp;<br>
+topic:&nbsp;The&nbsp;topic&nbsp;that&nbsp;the&nbsp;will&nbsp;message&nbsp;should&nbsp;be&nbsp;published&nbsp;on.<br>
+payload:&nbsp;The&nbsp;message&nbsp;to&nbsp;send&nbsp;as&nbsp;a&nbsp;will.&nbsp;If&nbsp;not&nbsp;given,&nbsp;or&nbsp;set&nbsp;to&nbsp;None&nbsp;a<br>
+zero&nbsp;length&nbsp;message&nbsp;will&nbsp;be&nbsp;used&nbsp;as&nbsp;the&nbsp;will.&nbsp;Passing&nbsp;an&nbsp;int&nbsp;or&nbsp;float<br>
+will&nbsp;result&nbsp;in&nbsp;the&nbsp;payload&nbsp;being&nbsp;converted&nbsp;to&nbsp;a&nbsp;string&nbsp;representing<br>
+that&nbsp;number.&nbsp;If&nbsp;you&nbsp;wish&nbsp;to&nbsp;send&nbsp;a&nbsp;true&nbsp;int/float,&nbsp;use&nbsp;struct.pack()&nbsp;to<br>
+create&nbsp;the&nbsp;payload&nbsp;you&nbsp;require.<br>
+qos:&nbsp;The&nbsp;quality&nbsp;of&nbsp;service&nbsp;level&nbsp;to&nbsp;use&nbsp;for&nbsp;the&nbsp;will.<br>
+retain:&nbsp;If&nbsp;set&nbsp;to&nbsp;true,&nbsp;the&nbsp;will&nbsp;message&nbsp;will&nbsp;be&nbsp;set&nbsp;as&nbsp;the&nbsp;"last&nbsp;known<br>
+good"/retained&nbsp;message&nbsp;for&nbsp;the&nbsp;topic.<br>
+&nbsp;<br>
+Raises&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;qos&nbsp;is&nbsp;not&nbsp;0,&nbsp;1&nbsp;or&nbsp;2,&nbsp;or&nbsp;if&nbsp;topic&nbsp;is&nbsp;None&nbsp;or&nbsp;has<br>
+zero&nbsp;string&nbsp;length.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="paho.mqtt.client.html#Client">paho.mqtt.client.Client</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>on_log</strong></dt>
+<dd><tt>If&nbsp;implemented,&nbsp;called&nbsp;when&nbsp;the&nbsp;client&nbsp;has&nbsp;log&nbsp;information.<br>
+Defined&nbsp;to&nbsp;allow&nbsp;debugging.</tt></dd>
+</dl>
+<dl><dt><strong>on_unsubscribe</strong></dt>
+<dd><tt>If&nbsp;implemented,&nbsp;called&nbsp;when&nbsp;the&nbsp;broker&nbsp;responds&nbsp;to&nbsp;an&nbsp;unsubscribe<br>
+request.</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>()</dt></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>logger</strong> = &lt;logging.Logger object&gt;</td></tr></table>
+</body></html>
