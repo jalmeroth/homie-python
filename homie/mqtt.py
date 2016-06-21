@@ -17,7 +17,8 @@ class HomieMqtt(paho_mqtt.Client):
         self._homieObj.mqttSetup()
 
     def on_message(self, mqttc, obj, msg):
-        logger.debug(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        logger.debug(
+            " < " + msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     def on_publish(self, mqttc, obj, mid):
         logger.debug("mid: " + str(mid))

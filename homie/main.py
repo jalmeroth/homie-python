@@ -114,7 +114,7 @@ class Homie(object):
             str(val),
             str(retained)
         ]
-        logger.debug(" ".join(msgs))
+        logger.debug(" > " + " ".join(msgs))
 
     def subscribe(self, homieNode, attr, callback):
         subscription = "/".join(
