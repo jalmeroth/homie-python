@@ -7,8 +7,8 @@ logger = logging.getLogger(__name__)
 class HomieMqtt(paho_mqtt.Client):
     """docstring for HomieMqtt"""
 
-    def __init__(self, homieObj, deviceId):
-        super(HomieMqtt, self).__init__(deviceId)
+    def __init__(self, homieObj, deviceId, **kwargs):
+        super(HomieMqtt, self).__init__(deviceId, **kwargs)
         self._connected = False
         self._homieObj = homieObj
 

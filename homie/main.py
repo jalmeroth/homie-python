@@ -21,7 +21,8 @@ DEFAULT_PREFS = {
     "DEVICE_ID": "xxxxxxxx",
     "DEVICE_NAME": "xxxxxxxx",
     "TOPIC": "devices",
-    "QOS": 1
+    "QOS": 1,
+    "PROTOCOL": None
 }
 
 
@@ -47,7 +48,8 @@ class Homie(object):
             self.deviceId,
         ])
 
-        self.mqtt = HomieMqtt(self, self.deviceId)
+        self.protocol = self.config.get("PROTOCOL")
+        self.mqtt = HomieMqtt(self, self.deviceId, protocol=self.protocol)
         self.host = self.config.get("HOST")
         self.port = self.config.get("PORT")
         self.keepalive = self.config.get("KEEPALIVE")
