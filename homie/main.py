@@ -12,17 +12,17 @@ from homie.node import HomieNode
 logger = logging.getLogger(__name__)
 
 DEFAULT_PREFS = {
-    "HOST": None,
-    "PORT": 1883,
-    "KEEPALIVE": 60,
-    "USERNAME": None,
-    "PASSWORD": None,
-    "CA_CERTS": None,
-    "DEVICE_ID": "xxxxxxxx",
-    "DEVICE_NAME": "xxxxxxxx",
-    "TOPIC": "devices",
-    "QOS": 1,
-    "PROTOCOL": None
+    "CA_CERTS": {"key": "ca_certs", "val": None},
+    "DEVICE_ID": {"key": "deviceId", "val": "xxxxxxxx"},
+    "DEVICE_NAME": {"key": "deviceName", "val": "xxxxxxxx"},
+    "HOST": {"key": "host", "val": None},
+    "KEEPALIVE": {"key": "keepalive", "val": 60},
+    "PASSWORD": {"key": "password", "val": None},
+    "PORT": {"key": "port", "val": 1883},
+    "PROTOCOL": {"key": "protocol", "val": None},
+    "QOS": {"key": "qos", "val": 1},
+    "TOPIC": {"key": "baseTopic", "val": "devices"},
+    "USERNAME": {"key": "username", "val": None}
 }
 
 
@@ -32,15 +32,11 @@ class Homie(object):
     def __init__(self, configFile):
         super(Homie, self).__init__()
         atexit.register(self.quit)
-        self.config = self.loadConfig(configFile)
-        logger.debug("config: {}".format(self.config))
+        self.initAttrs_(configFile)
 
         self.startTime = time.time()
         self.fwname = None
         self.fwversion = None
-        self.baseTopic = self.config.get("TOPIC")
-        self.deviceId = self.config.get("DEVICE_ID")
-        self.deviceName = self.config.get("DEVICE_NAME")
         self.nodes = []
 
         self.mqtt_topic = "/".join([
@@ -48,15 +44,7 @@ class Homie(object):
             self.deviceId,
         ])
 
-        self.protocol = self.config.get("PROTOCOL")
         self.mqtt = HomieMqtt(self, self.deviceId, protocol=self.protocol)
-        self.host = self.config.get("HOST")
-        self.port = self.config.get("PORT")
-        self.keepalive = self.config.get("KEEPALIVE")
-        self.username = self.config.get("USERNAME")
-        self.password = self.config.get("PASSWORD")
-        self.ca_certs = self.config.get("CA_CERTS")
-        self.qos = self.config.get("QOS")
 
         if not self.host:
             raise ValueError("No host specified.")
@@ -68,14 +56,30 @@ class Homie(object):
         self.uptimeTimer.start()
         self.signalTimer.start()
 
-    def overwriteConfigFromEnv(self, config):
-        for key in DEFAULT_PREFS:
-            config[key] = getenv(
-                "HOMIE_" + key,
-                config.get(key, DEFAULT_PREFS[key]))
-        return config
+    def initAttrs_(self, configFile):
+        """ Initialize homie attributes from env/config/defaults """
+
+        # load configuration from configFile
+        config = self.loadConfig(configFile)
+
+        # iterate through DEFAULT_PREFS
+        for pref in DEFAULT_PREFS:
+            key = DEFAULT_PREFS[pref]['key']
+            val = getenv(
+                "HOMIE_" + pref,                # env
+                config.get(
+                    pref,                       # config
+                    DEFAULT_PREFS[pref]['val']  # defaults
+                )
+            )
+
+            # set attr self.key = val
+            setattr(self, key, val)
+
+            logger.debug("{}: {}".format(key, getattr(self, key)))
 
     def loadConfig(self, configFile):
+        """ load configuration from configFile """
         config = {}
         configFile = os.path.realpath(configFile)
         try:
@@ -89,7 +93,8 @@ class Homie(object):
                 raise e
             finally:
                 fp.close()
-        return self.overwriteConfigFromEnv(config)
+        logger.debug("config: {}".format(config))
+        return config
 
     def Node(self, *args):
         homeNode = HomieNode(*args)
