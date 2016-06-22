@@ -102,21 +102,32 @@ class Homie(object):
         self.fwversion = version
         logger.debug("{}: {}".format(self.fwname, self.fwversion))
 
-    def setNodeProperty(self, homieNode, prop, val, retained=True):
+    def setNodeProperty(self, homieNode, prop, val, retain=True):
         topic = "/".join([
             self.mqtt_topic,
             homieNode.nodeId,
             prop
         ])
+        self.publish(topic, payload=val, retain=retain)
 
-        self.mqtt.publish(topic, payload=val, retain=retained)
+    def publish(self, topic, payload, retain=True, **kwargs):
+        """ Publish messages to MQTT, if connected """
+        if self.mqtt.connected:
+            msgs = [
+                topic,
+                str(payload),
+                str(retain)
+            ]
 
-        msgs = [
-            topic,
-            str(val),
-            str(retained)
-        ]
-        logger.debug(" > " + " ".join(msgs))
+            (result, mid) = self.mqtt.publish(
+                topic,
+                payload=payload,
+                retain=retain,
+                **kwargs)
+
+            logger.debug(str(mid) + " > " + " ".join(msgs))
+        else:
+            logger.warn("Not connected.")
 
     def subscribe(self, homieNode, attr, callback):
         subscription = "/".join(
@@ -148,7 +159,7 @@ class Homie(object):
     def mqttNodes(self):
         payload = ",".join(
             [(str(x.nodeId) + ":" + str(x.nodeType)) for x in self.nodes])
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$nodes",
             payload=payload, retain=True)
 
@@ -163,13 +174,13 @@ class Homie(object):
             payload = s.getsockname()[0]
             s.close()
 
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$localip",
             payload=payload, retain=True)
 
     def mqttUptime(self):
         payload = int(time.time() - self.startTime)
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$uptime",
             payload=payload, retain=True)
 
@@ -193,22 +204,22 @@ class Homie(object):
                     break
             fp.close()
 
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$signal",
             payload=payload, retain=True)
 
     def mqttSetup(self):
         self.mqtt.subscribe(self.mqtt_topic + "/#", self.qos)
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$online",
             payload="true", retain=True)
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$name",
             payload=self.deviceName, retain=True)
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$fwname",
             payload=self.fwname, retain=True)
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$fwversion",
             payload=self.fwversion, retain=True)
         self.mqttNodes()
@@ -235,7 +246,7 @@ class Homie(object):
     def quit(self):
         self.uptimeTimer.cancel()
         self.signalTimer.cancel()
-        self.mqtt.publish(
+        self.publish(
             self.mqtt_topic + "/$online",
             payload="false", retain=True)
         self.mqtt.loop_stop()
