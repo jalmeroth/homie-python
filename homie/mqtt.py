@@ -21,7 +21,7 @@ class HomieMqtt(paho_mqtt.Client):
             " < " + msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     def on_publish(self, mqttc, obj, mid):
-        logger.debug("mid: " + str(mid))
+        logger.debug("Published: " + str(mid))
 
     def on_subscribe(self, mqttc, obj, mid, granted_qos):
         logger.debug("Subscribed: " + str(mid) + " " + str(granted_qos))
