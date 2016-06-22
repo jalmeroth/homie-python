@@ -214,7 +214,7 @@ class Homie(object):
             payload=payload, retain=True)
 
     def mqttSetup(self):
-        self.mqtt.subscribe(self.mqtt_topic + "/#", self.qos)
+        self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
         self.publish(
             self.mqtt_topic + "/$online",
             payload="true", retain=True)
