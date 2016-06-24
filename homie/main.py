@@ -133,13 +133,13 @@ class Homie(object):
         if qos is None:
             qos = int(self.qos)
 
-        subscription = "/".join(
+        subscription = str("/".join(
             [
                 self.mqtt_topic,
                 homieNode.nodeId,
                 attr,
                 "set"
-            ])
+            ]))
 
         logger.debug("subscribe: {} {}".format(subscription, qos))
 
