@@ -280,12 +280,16 @@ class Homie(object):
         self._deviceId = deviceId
 
     def quit(self):
+        """ Clean up before exit """
+
+        # cancel all registered timers
         for timer in self.timers:
             timer.cancel()
 
         self.publish(
             self.mqtt_topic + "/$online",
             payload="false", retain=True)
+
         self.mqtt.loop_stop()
         self.mqtt.disconnect()
 
