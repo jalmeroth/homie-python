@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 import json
 import time
 import signal
@@ -293,12 +292,12 @@ class Homie(object):
     def _sigTerm(self, signal, frame):
         """ let's do a quit, which atexit will notice """
         logger.debug("Received SIGTERM")
-        sys.exit()
+        raise SystemExit
 
     def _sigHup(self, signal, frame):
         """ let's do a quit, which atexit will notice """
         logger.debug("Received SIGHUP")
-        sys.exit()
+        raise SystemExit
 
     def __del__(self):
         logger.debug("Quitting.")
