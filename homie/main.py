@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+import sys
 import json
 import time
+import signal
 import socket
 import atexit
 import logging
@@ -32,6 +34,8 @@ class Homie(object):
     def __init__(self, configFile):
         super(Homie, self).__init__()
         atexit.register(self.quit)
+        signal.signal(signal.SIGTERM, self._sigTerm)
+        signal.signal(signal.SIGHUP, self._sigHup)
         self.initAttrs_(configFile)
 
         self.startTime = time.time()
@@ -256,6 +260,16 @@ class Homie(object):
             payload="false", retain=True)
         self.mqtt.loop_stop()
         self.mqtt.disconnect()
+
+    def _sigTerm(self, signal, frame):
+        """ let's do a quit, which atexit will notice """
+        logger.debug("Received SIGTERM")
+        sys.exit()
+
+    def _sigHup(self, signal, frame):
+        """ let's do a quit, which atexit will notice """
+        logger.debug("Received SIGHUP")
+        sys.exit()
 
     def __del__(self):
         logger.debug("Quitting.")
