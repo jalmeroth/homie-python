@@ -1,13 +1,16 @@
 from setuptools import setup
 
+version = "0.1.6"
+
 setup(
     name="homie",
     packages=["homie"],
-    version="0.1.4",
+    version=version,
     description="Experimental implementation of the IoT convention called homie",
     author="Jan Almeroth",
     author_email="homie-python@almeroth.com",
     url="https://github.com/jalmeroth/homie-python",
+    download_url="https://github.com/jalmeroth/homie-python/tarball/" + version,
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",
