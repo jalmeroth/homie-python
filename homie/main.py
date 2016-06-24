@@ -56,8 +56,8 @@ class Homie(object):
 
         self.mqttRun()
 
-        self.uptimeTimer = self.Timer(60, self.mqttUptime)
-        self.signalTimer = self.Timer(60, self.mqttSignal)
+        self.uptimeTimer = self.Timer(60, self.publishUptime)
+        self.signalTimer = self.Timer(60, self.publishSignal)
         self.uptimeTimer.start()
         self.signalTimer.start()
 
@@ -125,25 +125,6 @@ class Homie(object):
         ])
         self.publish(topic, payload=val, retain=retain)
 
-    def publish(self, topic, payload, retain=True, **kwargs):
-        """ Publish messages to MQTT, if connected """
-        if self.mqtt.connected:
-            msgs = [
-                topic,
-                str(payload),
-                str(retain)
-            ]
-
-            (result, mid) = self.mqtt.publish(
-                topic,
-                payload=payload,
-                retain=retain,
-                **kwargs)
-
-            logger.debug(str(mid) + " > " + " ".join(msgs))
-        else:
-            logger.warn("Not connected.")
-
     def subscribe(self, homieNode, attr, callback):
         subscription = "/".join(
             [
@@ -171,14 +152,54 @@ class Homie(object):
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
 
-    def mqttNodes(self):
+    def mqttSetup(self):
+        self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
+        self.publish(
+            self.mqtt_topic + "/$online",
+            payload="true", retain=True)
+        self.publish(
+            self.mqtt_topic + "/$name",
+            payload=self.deviceName, retain=True)
+        self.publish(
+            self.mqtt_topic + "/$fwname",
+            payload=self.fwname, retain=True)
+        self.publish(
+            self.mqtt_topic + "/$fwversion",
+            payload=self.fwversion, retain=True)
+        self.publishNodes()
+        self.publishLocalip()
+        self.publishUptime()
+        self.publishSignal()
+
+    def publish(self, topic, payload, retain=True, **kwargs):
+        """ Publish messages to MQTT, if connected """
+        if self.mqtt.connected:
+            msgs = [
+                topic,
+                str(payload),
+                str(retain)
+            ]
+
+            (result, mid) = self.mqtt.publish(
+                topic,
+                payload=payload,
+                retain=retain,
+                **kwargs)
+
+            logger.debug(str(mid) + " > " + " ".join(msgs))
+        else:
+            logger.warn("Not connected.")
+
+    def publishNodes(self):
+        """ Publish registered nodes to MQTT """
         payload = ",".join(
             [(str(x.nodeId) + ":" + str(x.nodeType)) for x in self.nodes])
         self.publish(
             self.mqtt_topic + "/$nodes",
             payload=payload, retain=True)
 
-    def mqttLocalip(self):
+    def publishLocalip(self):
+        """ Publish local IP Address to MQTT """
         payload = None
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -193,13 +214,15 @@ class Homie(object):
             self.mqtt_topic + "/$localip",
             payload=payload, retain=True)
 
-    def mqttUptime(self):
+    def publishUptime(self):
+        """ Publish uptime of the script to MQTT """
         payload = int(time.time() - self.startTime)
         self.publish(
             self.mqtt_topic + "/$uptime",
             payload=payload, retain=True)
 
-    def mqttSignal(self):
+    def publishSignal(self):
+        """ Publish current signal strength to MQTT """
         # default payload
         payload = 100
 
@@ -222,25 +245,6 @@ class Homie(object):
         self.publish(
             self.mqtt_topic + "/$signal",
             payload=payload, retain=True)
-
-    def mqttSetup(self):
-        self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
-        self.publish(
-            self.mqtt_topic + "/$online",
-            payload="true", retain=True)
-        self.publish(
-            self.mqtt_topic + "/$name",
-            payload=self.deviceName, retain=True)
-        self.publish(
-            self.mqtt_topic + "/$fwname",
-            payload=self.fwname, retain=True)
-        self.publish(
-            self.mqtt_topic + "/$fwversion",
-            payload=self.fwversion, retain=True)
-        self.mqttNodes()
-        self.mqttLocalip()
-        self.mqttUptime()
-        self.mqttSignal()
 
     @property
     def baseTopic(self):
