@@ -42,6 +42,7 @@ class Homie(object):
         self.fwname = None
         self.fwversion = None
         self.nodes = []
+        self.timers = []
 
         self.mqtt_topic = "/".join([
             self.baseTopic,
@@ -55,8 +56,8 @@ class Homie(object):
 
         self.mqttRun()
 
-        self.uptimeTimer = HomieTimer(60, self.mqttUptime)
-        self.signalTimer = HomieTimer(60, self.mqttSignal)
+        self.uptimeTimer = self.Timer(60, self.mqttUptime)
+        self.signalTimer = self.Timer(60, self.mqttSignal)
         self.uptimeTimer.start()
         self.signalTimer.start()
 
@@ -99,6 +100,11 @@ class Homie(object):
                 fp.close()
         logger.debug("config: {}".format(config))
         return config
+
+    def Timer(self, *args):
+        homieTimer = HomieTimer(*args)
+        self.timers.append(homieTimer)
+        return(homieTimer)
 
     def Node(self, *args):
         homeNode = HomieNode(*args)
@@ -253,8 +259,9 @@ class Homie(object):
         self._deviceId = deviceId
 
     def quit(self):
-        self.uptimeTimer.cancel()
-        self.signalTimer.cancel()
+        for timer in self.timers:
+            timer.cancel()
+
         self.publish(
             self.mqtt_topic + "/$online",
             payload="false", retain=True)
