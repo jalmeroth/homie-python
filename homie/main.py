@@ -23,8 +23,9 @@ DEFAULT_PREFS = {
     "PORT": {"key": "port", "val": 1883},
     "PROTOCOL": {"key": "protocol", "val": None},
     "QOS": {"key": "qos", "val": 1},
+    "SUBSCRIBE_ALL": {"key": "subscribe_all", "val": False},
     "TOPIC": {"key": "baseTopic", "val": "devices"},
-    "USERNAME": {"key": "username", "val": None}
+    "USERNAME": {"key": "username", "val": None},
 }
 
 
@@ -43,6 +44,7 @@ class Homie(object):
         self.fwversion = None
         self.nodes = []
         self.timers = []
+        self.subscriptions = []
 
         self.mqtt_topic = "/".join([
             self.baseTopic,
@@ -125,7 +127,13 @@ class Homie(object):
         ])
         self.publish(topic, payload=val, retain=retain)
 
-    def subscribe(self, homieNode, attr, callback):
+    def subscribe(self, homieNode, attr, callback, qos=None):
+        """ Register new subscription and add a callback """
+
+        # user qos prefs
+        if qos is None:
+            qos = int(self.qos)
+
         subscription = "/".join(
             [
                 self.mqtt_topic,
@@ -134,10 +142,15 @@ class Homie(object):
                 "set"
             ])
 
-        logger.debug("subscribe: {}".format(subscription))
+        logger.debug("subscribe: {} {}".format(subscription, qos))
 
-        self.mqtt.message_callback_add(
-            subscription, callback)
+        if not self.subscribe_all:
+            self.subscriptions.append((subscription, qos))
+
+        if self.mqtt.connected:
+            self.mqtt.subscribe(self.subscriptions)
+
+        self.mqtt.message_callback_add(subscription, callback)
 
     def mqttRun(self):
         self.mqtt.will_set(
@@ -153,7 +166,11 @@ class Homie(object):
         self.mqtt.loop_start()
 
     def mqttSetup(self):
-        self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
+        if self.subscribe_all:
+            self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
+        else:
+            self.mqtt.subscribe(self.subscriptions)
+
         self.publish(
             self.mqtt_topic + "/$online",
             payload="true", retain=True)
@@ -166,6 +183,7 @@ class Homie(object):
         self.publish(
             self.mqtt_topic + "/$fwversion",
             payload=self.fwversion, retain=True)
+
         self.publishNodes()
         self.publishLocalip()
         self.publishUptime()
