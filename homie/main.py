@@ -33,10 +33,13 @@ class Homie(object):
 
     def __init__(self, configFile):
         super(Homie, self).__init__()
-        atexit.register(self.quit)
+        atexit.register(self._exitus)
         signal.signal(signal.SIGTERM, self._sigTerm)
         signal.signal(signal.SIGHUP, self._sigHup)
-        self.initAttrs_(configFile)
+
+        self._initAttrs(configFile)
+        if not self.host:
+            raise ValueError("No host specified.")
 
         self.startTime = time.time()
         self.fwname = None
@@ -50,41 +53,32 @@ class Homie(object):
             self.deviceId,
         ])
 
-        self.mqtt = HomieMqtt(self, self.deviceId, protocol=self.protocol)
+        self._mqtt_connected = False  # connected
+        self._mqtt_subscribed = False  # subscribed
 
-        if not self.host:
-            raise ValueError("No host specified.")
-
-        self.mqttRun()
+        try:
+            self.mqtt = HomieMqtt(self, self.deviceId, protocol=self.protocol)
+        except Exception as e:
+            raise e
+        else:
+            self._initialize()
 
         self.uptimeTimer = self.Timer(60, self.publishUptime)
         self.signalTimer = self.Timer(60, self.publishSignal)
         self.uptimeTimer.start()
         self.signalTimer.start()
 
-    def initAttrs_(self, configFile):
-        """ Initialize homie attributes from env/config/defaults """
+    def Timer(self, *args):
+        homieTimer = HomieTimer(*args)
+        self.timers.append(homieTimer)
+        return(homieTimer)
 
-        # load configuration from configFile
-        config = self.loadConfig(configFile)
+    def Node(self, *args):
+        homeNode = HomieNode(*args)
+        self.nodes.append(homeNode)
+        return(homeNode)
 
-        # iterate through DEFAULT_PREFS
-        for pref in DEFAULT_PREFS:
-            key = DEFAULT_PREFS[pref]['key']
-            val = getenv(
-                "HOMIE_" + pref,                # env
-                config.get(
-                    pref,                       # config
-                    DEFAULT_PREFS[pref]['val']  # defaults
-                )
-            )
-
-            # set attr self.key = val
-            setattr(self, key, val)
-
-            logger.debug("{}: {}".format(key, getattr(self, key)))
-
-    def loadConfig(self, configFile):
+    def _loadConfig(self, configFile):
         """ load configuration from configFile """
         config = {}
         configFile = os.path.realpath(configFile)
@@ -102,15 +96,87 @@ class Homie(object):
         logger.debug("config: {}".format(config))
         return config
 
-    def Timer(self, *args):
-        homieTimer = HomieTimer(*args)
-        self.timers.append(homieTimer)
-        return(homieTimer)
+    def _initAttrs(self, configFile):
+        """ Initialize homie attributes from env/config/defaults """
 
-    def Node(self, *args):
-        homeNode = HomieNode(*args)
-        self.nodes.append(homeNode)
-        return(homeNode)
+        # load configuration from configFile
+        config = self._loadConfig(configFile)
+
+        # iterate through DEFAULT_PREFS
+        for pref in DEFAULT_PREFS:
+            key = DEFAULT_PREFS[pref]['key']
+            val = getenv(
+                "HOMIE_" + pref,                # env
+                config.get(
+                    pref,                       # config
+                    DEFAULT_PREFS[pref]['val']  # defaults
+                )
+            )
+
+            # set attr self.key = val
+            setattr(self, key, val)
+
+            logger.debug("{}: {}".format(key, getattr(self, key)))
+
+    def _initialize(self):
+        # logger.debug("Initializing MQTT")
+        self.mqtt.on_connect = self._connected
+        self.mqtt.on_subscribe = self._subscribed
+        self.mqtt.on_publish = self._published
+        self.mqtt.on_disconnect = self._disconnected
+
+        self.mqtt.will_set(
+            self.mqtt_topic + "/$online", payload="false", retain=True)
+
+        if self.username:
+            self.mqtt.username_pw_set(self.username, password=self.password)
+
+        if self.ca_certs:
+            self.mqtt.tls_set(self.ca_certs)
+
+        self.mqtt.connect(self.host, self.port, self.keepalive)
+        self.mqtt.loop_start()
+
+    def _connected(self, *args):
+        # logger.debug("_connected: {}".format(args))
+        self.mqtt_connected = True
+
+        if not self.mqtt_subscribed:
+            if self.subscriptions:
+                self.mqtt.subscribe(self.subscriptions)
+            else:
+                self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
+
+        self.publish(
+            self.mqtt_topic + "/$online",
+            payload="true", retain=True)
+        self.publish(
+            self.mqtt_topic + "/$name",
+            payload=self.deviceName, retain=True)
+        self.publish(
+            self.mqtt_topic + "/$fwname",
+            payload=self.fwname, retain=True)
+        self.publish(
+            self.mqtt_topic + "/$fwversion",
+            payload=self.fwversion, retain=True)
+
+        self.publishNodes()
+        self.publishLocalip()
+        self.publishUptime()
+        self.publishSignal()
+
+    def _subscribed(self, *args):
+        # logger.debug("_subscribed: {}".format(args))
+        if not self.mqtt_subscribed:
+            self.mqtt_subscribed = True
+
+    def _published(self, *args):
+        # logger.debug("_published: {}".format(args))
+        pass
+
+    def _disconnected(self, mqtt, obj, rc):
+        self.mqtt_connected = False
+        self.mqtt_subscribed = False
 
     def setFirmware(self, name, version):
         """docstring for setFirmware"""
@@ -146,51 +212,14 @@ class Homie(object):
         if not self.subscribe_all:
             self.subscriptions.append((subscription, qos))
 
-        if self.mqtt.connected:
+        if self.mqtt_connected:
             self.mqtt.subscribe(self.subscriptions)
 
         self.mqtt.message_callback_add(subscription, callback)
 
-    def mqttRun(self):
-        self.mqtt.will_set(
-            self.mqtt_topic + "/$online", payload="false", retain=True)
-
-        if self.username:
-            self.mqtt.username_pw_set(self.username, password=self.password)
-
-        if self.ca_certs:
-            self.mqtt.tls_set(self.ca_certs)
-
-        self.mqtt.connect(self.host, self.port, self.keepalive)
-        self.mqtt.loop_start()
-
-    def mqttSetup(self):
-        if self.subscribe_all:
-            self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
-        else:
-            self.mqtt.subscribe(self.subscriptions)
-
-        self.publish(
-            self.mqtt_topic + "/$online",
-            payload="true", retain=True)
-        self.publish(
-            self.mqtt_topic + "/$name",
-            payload=self.deviceName, retain=True)
-        self.publish(
-            self.mqtt_topic + "/$fwname",
-            payload=self.fwname, retain=True)
-        self.publish(
-            self.mqtt_topic + "/$fwversion",
-            payload=self.fwversion, retain=True)
-
-        self.publishNodes()
-        self.publishLocalip()
-        self.publishUptime()
-        self.publishSignal()
-
     def publish(self, topic, payload, retain=True, **kwargs):
         """ Publish messages to MQTT, if connected """
-        if self.mqtt.connected:
+        if self.mqtt_connected:
             msgs = [
                 topic,
                 str(payload),
@@ -279,7 +308,25 @@ class Homie(object):
     def deviceId(self, deviceId):
         self._deviceId = deviceId
 
-    def quit(self):
+    @property
+    def mqtt_connected(self):
+        return self._mqtt_connected
+
+    @mqtt_connected.setter
+    def mqtt_connected(self, state):
+        logger.debug("connected: {}".format(state))
+        self._mqtt_connected = state
+
+    @property
+    def mqtt_subscribed(self):
+        return self._mqtt_subscribed
+
+    @mqtt_subscribed.setter
+    def mqtt_subscribed(self, state):
+        logger.debug("subscribed: {}".format(state))
+        self._mqtt_subscribed = state
+
+    def _exitus(self):
         """ Clean up before exit """
 
         # cancel all registered timers
