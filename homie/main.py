@@ -47,6 +47,7 @@ class Homie(object):
         self.nodes = []
         self.timers = []
         self.subscriptions = []
+        self.nosubscriptions = False
 
         self.mqtt_topic = "/".join([
             self.baseTopic,
@@ -142,8 +143,16 @@ class Homie(object):
         logger.debug("Subscriptions: {}".format(self.subscriptions))
         if self.subscriptions:
             self.mqtt.subscribe(self.subscriptions)
+            if self.nosubscriptions and not self.subscribe_all:
+                self._unsubscribe()
         else:
             self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
+            self.nosubscriptions = True
+
+    def _unsubscribe(self, topic=None):
+        if not topic:
+            topic = self.mqtt_topic + "/#"
+        self.mqtt.unsubscribe(topic)
 
     def _connected(self, *args):
         # logger.debug("_connected: {}".format(args))
