@@ -55,9 +55,10 @@ class Homie(object):
 
         self._mqtt_connected = False  # connected
         self._mqtt_subscribed = False  # subscribed
+        clientId = "Homie-" + str(self.deviceId)
 
         try:
-            self.mqtt = HomieMqtt(self, self.deviceId, protocol=self.protocol)
+            self.mqtt = HomieMqtt(self, clientId, protocol=self.protocol)
         except Exception as e:
             raise e
         else:
@@ -137,15 +138,19 @@ class Homie(object):
         self.mqtt.connect(self.host, self.port, self.keepalive)
         self.mqtt.loop_start()
 
+    def _subscribe(self):
+        logger.debug("Subscriptions: {}".format(self.subscriptions))
+        if self.subscriptions:
+            self.mqtt.subscribe(self.subscriptions)
+        else:
+            self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
+
     def _connected(self, *args):
         # logger.debug("_connected: {}".format(args))
         self.mqtt_connected = True
 
         if not self.mqtt_subscribed:
-            if self.subscriptions:
-                self.mqtt.subscribe(self.subscriptions)
-            else:
-                self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
+            self._subscribe()
 
         self.publish(
             self.mqtt_topic + "/$online",
@@ -213,7 +218,31 @@ class Homie(object):
             self.subscriptions.append((subscription, qos))
 
         if self.mqtt_connected:
-            self.mqtt.subscribe(self.subscriptions)
+            self._subscribe()
+
+        self.mqtt.message_callback_add(subscription, callback)
+
+    def subscribeProperty(self, homieNode, attr, callback, qos=None):
+        """ Register new subscription for property and add a callback """
+
+        # user qos prefs
+        if qos is None:
+            qos = int(self.qos)
+
+        subscription = str("/".join(
+            [
+                self.mqtt_topic,
+                homieNode.nodeId,
+                attr
+            ]))
+
+        logger.debug("subscribe: {} {}".format(subscription, qos))
+
+        if not self.subscribe_all:
+            self.subscriptions.append((subscription, qos))
+
+        if self.mqtt_connected:
+            self._subscribe()
 
         self.mqtt.message_callback_add(subscription, callback)
 
