@@ -308,17 +308,19 @@ class Homie(object):
 
     def publishFwname(self):
         """ Publish fwname of the script to MQTT """
+        payload = str(self.fwname)
         if self.fwname:
             self.publish(
                 self.mqtt_topic + "/$fwname",
-                payload=self.fwname, retain=True)
+                payload=payload, retain=True)
 
     def publishFwversion(self):
         """ Publish fwversion of the script to MQTT """
+        payload = str(self.fwversion)
         if self.fwversion:
             self.publish(
                 self.mqtt_topic + "/$fwversion",
-                payload=self.fwversion, retain=True)
+                payload=payload, retain=True)
 
     def publishSignal(self):
         """ Publish current signal strength to MQTT """
