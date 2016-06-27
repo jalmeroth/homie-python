@@ -168,13 +168,9 @@ class Homie(object):
         self.publish(
             self.mqtt_topic + "/$name",
             payload=self.deviceName, retain=True)
-        self.publish(
-            self.mqtt_topic + "/$fwname",
-            payload=self.fwname, retain=True)
-        self.publish(
-            self.mqtt_topic + "/$fwversion",
-            payload=self.fwversion, retain=True)
 
+        self.publishFwname()
+        self.publishFwversion()
         self.publishNodes()
         self.publishLocalip()
         self.publishUptime()
@@ -198,6 +194,10 @@ class Homie(object):
         self.fwname = name
         self.fwversion = version
         logger.debug("{}: {}".format(self.fwname, self.fwversion))
+
+        if self.mqtt_connected:
+            self.publishFwname()
+            self.publishFwversion()
 
     def setNodeProperty(self, homieNode, prop, val, retain=True):
         topic = "/".join([
@@ -305,6 +305,20 @@ class Homie(object):
         self.publish(
             self.mqtt_topic + "/$uptime",
             payload=payload, retain=True)
+
+    def publishFwname(self):
+        """ Publish fwname of the script to MQTT """
+        if self.fwname:
+            self.publish(
+                self.mqtt_topic + "/$fwname",
+                payload=self.fwname, retain=True)
+
+    def publishFwversion(self):
+        """ Publish fwversion of the script to MQTT """
+        if self.fwversion:
+            self.publish(
+                self.mqtt_topic + "/$fwversion",
+                payload=self.fwversion, retain=True)
 
     def publishSignal(self):
         """ Publish current signal strength to MQTT """
