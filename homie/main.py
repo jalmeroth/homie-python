@@ -49,10 +49,10 @@ class Homie(object):
         self.subscriptions = []
         self.nosubscriptions = False
 
-        self.mqtt_topic = "/".join([
+        self.mqtt_topic = str("/".join([
             self.baseTopic,
             self.deviceId,
-        ])
+        ]))
 
         self._mqtt_connected = False  # connected
         self._mqtt_subscribed = False  # subscribed
@@ -153,7 +153,7 @@ class Homie(object):
         if not topic:
             topic = self.mqtt_topic + "/#"
         logger.debug("_unsubscribe: {}".format(topic))
-        self.mqtt.unsubscribe(topic)
+        self.mqtt.unsubscribe(str(topic))
 
     def _connected(self, *args):
         # logger.debug("_connected: {}".format(args))
