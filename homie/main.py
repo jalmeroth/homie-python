@@ -47,7 +47,7 @@ class Homie(object):
         self.nodes = []
         self.timers = []
         self.subscriptions = []
-        self.nosubscriptions = False
+        self.subscribe_all_forced = False
 
         self.mqtt_topic = str("/".join([
             self.baseTopic,
@@ -143,11 +143,11 @@ class Homie(object):
         logger.debug("Subscriptions: {}".format(self.subscriptions))
         if self.subscriptions:
             self.mqtt.subscribe(self.subscriptions)
-            if self.nosubscriptions and not self.subscribe_all:
+            if self.subscribe_all_forced and not self.subscribe_all:
                 self._unsubscribe()
         else:
             self.mqtt.subscribe(self.mqtt_topic + "/#", int(self.qos))
-            self.nosubscriptions = True
+            self.subscribe_all_forced = True
 
     def _unsubscribe(self, topic=None):
         if not topic:
