@@ -152,7 +152,7 @@ class Homie(object):
     def _unsubscribe(self, topic=None):
         if not topic:
             topic = self.mqtt_topic + "/#"
-        logger.debug("_unsubscribe: {}".format(self.topic))
+        logger.debug("_unsubscribe: {}".format(topic))
         self.mqtt.unsubscribe(topic)
 
     def _connected(self, *args):
