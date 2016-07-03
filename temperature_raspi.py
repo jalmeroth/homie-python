@@ -21,6 +21,7 @@ def getCpuTemperature():
 
 def main():
     Homie.setFirmware("raspi-temperature", "1.0.0")
+    Homie.setup()
 
     while True:
         temperature = getCpuTemperature()

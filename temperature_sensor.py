@@ -15,6 +15,7 @@ humidityNode = Homie.Node("humidity", "humidity")
 
 def main():
     Homie.setFirmware("awesome-temperature", "1.0.0")
+    Homie.setup()
 
     while True:
         temperature = 22.0

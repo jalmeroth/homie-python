@@ -22,6 +22,7 @@ def switchOnHandler(mqttc, obj, msg):
 def main():
     Homie.setFirmware("relay-switch", "1.0.0")
     Homie.subscribe(switchNode, "on", switchOnHandler)
+    Homie.setup()
 
     while True:
         time.sleep(1)

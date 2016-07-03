@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+import sys
 import json
 import time
 import signal
@@ -54,6 +56,7 @@ class Homie(object):
             self.deviceId,
         ]))
 
+        self._setupCalled = False
         self._mqtt_connected = False  # connected
         self._mqtt_subscribed = False  # subscribed
         clientId = "Homie-" + str(self.deviceId)
@@ -62,13 +65,6 @@ class Homie(object):
             self.mqtt = HomieMqtt(self, clientId, protocol=self.protocol)
         except Exception as e:
             raise e
-        else:
-            self._initialize()
-
-        self.uptimeTimer = self.Timer(60, self.publishUptime)
-        self.signalTimer = self.Timer(60, self.publishSignal)
-        self.uptimeTimer.start()
-        self.signalTimer.start()
 
     def Timer(self, *args):
         homieTimer = HomieTimer(*args)
@@ -120,7 +116,18 @@ class Homie(object):
 
             logger.debug("{}: {}".format(key, getattr(self, key)))
 
+    def _checkBeforeSetup(self):
+        """ checks whether setup() was called before """
+        if self._setupCalled:
+            raise BaseException(
+                "✖ {}(): has to be called before setup()".format(
+                    sys._getframe(1).f_code.co_name  # name of caller
+                ))
+        else:
+            pass
+
     def _initialize(self):
+        """ init and connect MQTT """
         # logger.debug("Initializing MQTT")
         self.mqtt.on_connect = self._connected
         self.mqtt.on_subscribe = self._subscribed
@@ -189,15 +196,25 @@ class Homie(object):
         self.mqtt_connected = False
         self.mqtt_subscribed = False
 
+    def setup(self):
+        """ set homie up """
+        self._setupCalled = True
+
+        # init and connect MQTT
+        self._initialize()
+
+        self.uptimeTimer = self.Timer(60, self.publishUptime)
+        self.signalTimer = self.Timer(60, self.publishSignal)
+        self.uptimeTimer.start()
+        self.signalTimer.start()
+
     def setFirmware(self, name, version):
         """docstring for setFirmware"""
+        self._checkBeforeSetup()
+
         self.fwname = name
         self.fwversion = version
         logger.debug("{}: {}".format(self.fwname, self.fwversion))
-
-        if self.mqtt_connected:
-            self.publishFwname()
-            self.publishFwversion()
 
     def setNodeProperty(self, homieNode, prop, val, retain=True):
         topic = "/".join([
@@ -209,6 +226,7 @@ class Homie(object):
 
     def subscribe(self, homieNode, attr, callback, qos=None):
         """ Register new subscription and add a callback """
+        self._checkBeforeSetup()
 
         # user qos prefs
         if qos is None:
@@ -234,6 +252,7 @@ class Homie(object):
 
     def subscribeProperty(self, homieNode, attr, callback, qos=None):
         """ Register new subscription for property and add a callback """
+        self._checkBeforeSetup()
 
         # user qos prefs
         if qos is None:
