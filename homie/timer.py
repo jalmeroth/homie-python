@@ -1,34 +1,26 @@
 #!/usr/bin/env python
+import time
 import logging
-from threading import Timer
+import threading
 logger = logging.getLogger(__name__)
 
 
-class HomieTimer(object):
-    """docstring for HomieTimer"""
+class HomieTimer(threading.Thread):
 
-    def __init__(self, t, hFunction):
-        super(HomieTimer, self).__init__()
+    def __init__(self, t, f, group=None, target=None, name=None):
+        threading.Thread.__init__(self, group=group, target=target, name=name)
+        self.daemon = True
         self.t = t
-        self.hFunction = hFunction
-        self.thread = Timer(self.t, self.handle_function)
-        self.thread.daemon = True
+        self.f = f
 
-    def handle_function(self):
-        self.hFunction()
-        self.thread = Timer(self.t, self.handle_function)
-        self.thread.daemon = True
-        self.thread.start()
-
-    def start(self):
-        self.thread.start()
-
-    def cancel(self):
-        logger.debug("Canceling: {}".format(self))
-        self.thread.cancel()
-
-    def __del__(self):
-        logger.debug("Quitting.")
+    def run(self):
+        starttime = time.time()
+        while True:
+            self.f()
+            # figure out how much sleep remains, after f() was executed
+            delay = self.t - ((time.time() - starttime) % self.t)
+            # logger.debug("Delay: {}".format(delay))
+            time.sleep(delay)
 
 
 def main():

@@ -66,8 +66,8 @@ class Homie(object):
         except Exception as e:
             raise e
 
-    def Timer(self, *args):
-        homieTimer = HomieTimer(*args)
+    def Timer(self, *args, **kwargs):
+        homieTimer = HomieTimer(*args, **kwargs)
         self.timers.append(homieTimer)
         return(homieTimer)
 
@@ -203,8 +203,10 @@ class Homie(object):
         # init and connect MQTT
         self._initialize()
 
-        self.uptimeTimer = self.Timer(60, self.publishUptime)
-        self.signalTimer = self.Timer(60, self.publishSignal)
+        self.uptimeTimer = self.Timer(
+            60, self.publishUptime, name="uptimeTimer")
+        self.signalTimer = self.Timer(
+            60, self.publishSignal, name="signalTimer")
         self.uptimeTimer.start()
         self.signalTimer.start()
 
@@ -402,10 +404,6 @@ class Homie(object):
 
     def _exitus(self):
         """ Clean up before exit """
-
-        # cancel all registered timers
-        for timer in self.timers:
-            timer.cancel()
 
         self.publish(
             self.mqtt_topic + "/$online",
