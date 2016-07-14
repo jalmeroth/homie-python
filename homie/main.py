@@ -143,7 +143,14 @@ class Homie(object):
         if self.ca_certs:
             self.mqtt.tls_set(self.ca_certs)
 
-        self.mqtt.connect(self.host, self.port, self.keepalive)
+        try:
+            self.mqtt.connect(self.host, self.port, self.keepalive)
+        except EnvironmentError as e:
+            sleepSecs = 10
+            logger.warning("{} - retrying in {} seconds.".format(e, sleepSecs))
+            time.sleep(sleepSecs)
+            self.mqtt.connect(self.host, self.port, self.keepalive)
+
         self.mqtt.loop_start()
 
     def _subscribe(self):
