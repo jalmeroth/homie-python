@@ -25,7 +25,7 @@ DEFAULT_PREFS = {
     "PROTOCOL": {"key": "protocol", "val": None},
     "QOS": {"key": "qos", "val": 1},
     "SUBSCRIBE_ALL": {"key": "subscribe_all", "val": False},
-    "TOPIC": {"key": "baseTopic", "val": "devices"},
+    "TOPIC": {"key": "baseTopic", "val": "homie"},
     "USERNAME": {"key": "username", "val": None},
 }
 
