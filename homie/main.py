@@ -12,11 +12,12 @@ from os import getenv
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
+from homie.helpers import isIdFormat, generateDeviceId
 logger = logging.getLogger(__name__)
 
 DEFAULT_PREFS = {
     "CA_CERTS": {"key": "ca_certs", "val": None},
-    "DEVICE_ID": {"key": "deviceId", "val": "xxxxxxxx"},
+    "DEVICE_ID": {"key": "deviceId", "val": None},
     "DEVICE_NAME": {"key": "deviceName", "val": "xxxxxxxx"},
     "HOST": {"key": "host", "val": None},
     "KEEPALIVE": {"key": "keepalive", "val": 60},
@@ -389,7 +390,11 @@ class Homie(object):
 
     @deviceId.setter
     def deviceId(self, deviceId):
-        self._deviceId = deviceId
+        if isIdFormat(deviceId):
+            self._deviceId = deviceId
+        else:
+            logger.warning("Provided 'deviceId' has no valid ID-Format.")
+            self._deviceId = generateDeviceId()
 
     @property
     def mqtt_connected(self):
