@@ -331,7 +331,7 @@ class Homie(object):
         """ Publish uptime of the script to MQTT """
         payload = int(time.time() - self.startTime)
         self.publish(
-            self.mqtt_topic + "/$uptime",
+            self.mqtt_topic + "/$uptime/value",
             payload=payload, retain=True)
 
     def publishFwname(self):
