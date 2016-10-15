@@ -13,8 +13,10 @@ from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
 from homie.helpers import isIdFormat, generateDeviceId
+from homie.version import __version__ as HOMIE_PYTHON_VERSION
 logger = logging.getLogger(__name__)
 
+HOMIE_VERSION = "2.0.0"
 DEFAULT_PREFS = {
     "CA_CERTS": {"key": "ca_certs", "val": None},
     "DEVICE_ID": {"key": "deviceId", "val": None},
@@ -186,6 +188,7 @@ class Homie(object):
             self.mqtt_topic + "/$name",
             payload=self.deviceName, retain=True)
 
+        self.publishHomie()
         self.publishFwname()
         self.publishFwversion()
         self.publishNodes()
@@ -194,6 +197,7 @@ class Homie(object):
         self.publishUptimeInterval()
         self.publishSignal()
         self.publishImplementation()
+        self.publishImplementationVersion()
 
     def _subscribed(self, *args):
         # logger.debug("_subscribed: {}".format(args))
@@ -353,6 +357,20 @@ class Homie(object):
             self.mqtt_topic + "/$implementation",
             payload=payload, retain=True)
 
+    def publishImplementationVersion(self):
+        """ Publish identifier for the Homie implementation to MQTT """
+        payload = HOMIE_PYTHON_VERSION
+        self.publish(
+            self.mqtt_topic + "/$implementation/version",
+            payload=payload, retain=True)
+
+    def publishHomie(self):
+        """ Publish Version of the Homie convention the device conforms to """
+        payload = HOMIE_VERSION
+        self.publish(
+            self.mqtt_topic + "/$homie",
+            payload=payload, retain=True)
+
     def publishFwname(self):
         """ Publish fwname of the script to MQTT """
         payload = str(self.fwname)
@@ -458,6 +476,7 @@ class Homie(object):
 
 def main():
     pass
+
 
 if __name__ == '__main__':
     try:
