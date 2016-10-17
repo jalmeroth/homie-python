@@ -17,7 +17,7 @@ Please take look at our examples and read the [documentation](docs/):
 * [relay_switch.py](relay_switch.py)
 
 ## Support ##
-If you have any question, feel free to contact me via [email](mailto:homie-python@almeroth.com) or simply open a new [issue](./issues).
+If you have any question, feel free to contact me via [email](mailto:homie-python@almeroth.com) or simply open a new [issue](https://github.com/jalmeroth/homie-python/issues).
 
 ## Thanks ##
-A big thank you goes to @marvinroger for his stunning work on homie and all projects around it.
+A big thank you goes to [@marvinroger](https://github.com/marvinroger) for his stunning work on homie and all projects around it.
