@@ -42,6 +42,7 @@ class Homie(object):
         signal.signal(signal.SIGTERM, self._sigTerm)
         signal.signal(signal.SIGHUP, self._sigHup)
 
+        self.implementation_config = {}
         self._initAttrs(configFile)
         if not self.host:
             raise ValueError("No host specified.")
@@ -118,8 +119,9 @@ class Homie(object):
 
             # set attr self.key = val
             setattr(self, key, val)
-
             logger.debug("{}: {}".format(key, getattr(self, key)))
+            if val and key is not "password":
+                self.implementation_config[key] = val
 
     def _checkBeforeSetup(self):
         """ checks whether setup() was called before """
@@ -198,6 +200,7 @@ class Homie(object):
         self.publishSignal()
         self.publishImplementation()
         self.publishImplementationVersion()
+        self.publishImplementationConfig()
 
     def _subscribed(self, *args):
         # logger.debug("_subscribed: {}".format(args))
@@ -336,7 +339,6 @@ class Homie(object):
                 payload=node.getProperties(),
                 retain=True
             )
-            print(node.handler)
 
     def publishLocalip(self):
         """ Publish local IP Address to MQTT """
@@ -380,6 +382,13 @@ class Homie(object):
         payload = HOMIE_PYTHON_VERSION
         self.publish(
             self.mqtt_topic + "/$implementation/version",
+            payload=payload, retain=True)
+
+    def publishImplementationConfig(self):
+        """ Publish configuration for the Homie implementation to MQTT """
+        payload = json.dumps(self.implementation_config)
+        self.publish(
+            self.mqtt_topic + "/$implementation/config",
             payload=payload, retain=True)
 
     def publishHomie(self):
