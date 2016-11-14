@@ -229,6 +229,15 @@ class Homie(object):
         self.uptimeTimer.start()
         self.signalTimer.start()
 
+    def setBroadcastHandler(self, callback, level="#", qos=None):
+        """  """
+        topic = "/".join([
+            self.mqtt_topic,  # base topic + deviceId
+            "$broadcast",
+            level
+        ])
+        self.subscribeTopic(topic, callback, qos)
+
     def setFirmware(self, name, version):
         """docstring for setFirmware"""
         self._checkBeforeSetup()
