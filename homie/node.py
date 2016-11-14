@@ -35,8 +35,18 @@ class HomeNodeRange(HomieNodeProp):
     def __init__(self, node, prop, lower, upper):
         super(HomeNodeRange, self).__init__(node, prop)
         self.node = node
+        self._range = range(lower, upper)
+        self.range = None
         self.lower = lower
         self.upper = upper
+
+    def setRange(self, lower, upper):
+        # Todo: validate input
+        if lower in self._range and upper in self._range:
+            self.range = range(lower, upper)
+            return self
+        else:
+            logger.warning("Specified range out of announced range.")
 
 
 class HomieNode(object):
