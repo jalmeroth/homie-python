@@ -54,8 +54,7 @@ class Homie(object):
         self.timers = []
         self.subscriptions = []
         self.subscribe_all_forced = False
-        self.uptimeInterval = 60
-        self.signalInterval = 60
+        self.statsInterval = 60
 
         self.mqtt_topic = str("/".join([
             self.baseTopic,
@@ -196,7 +195,7 @@ class Homie(object):
         self.publishNodes()
         self.publishLocalip()
         self.publishUptime()
-        self.publishUptimeInterval()
+        self.publishStatsInterval()
         self.publishSignal()
         self.publishImplementation()
         self.publishImplementationVersion()
@@ -223,9 +222,9 @@ class Homie(object):
         self._initialize()
 
         self.uptimeTimer = self.Timer(
-            self.uptimeInterval, self.publishUptime, name="uptimeTimer")
+            self.statsInterval, self.publishUptime, name="uptimeTimer")
         self.signalTimer = self.Timer(
-            self.signalInterval, self.publishSignal, name="signalTimer")
+            self.statsInterval, self.publishSignal, name="signalTimer")
         self.uptimeTimer.start()
         self.signalTimer.start()
 
@@ -355,14 +354,14 @@ class Homie(object):
         """ Publish /$uptime/value to MQTT """
         payload = int(time.time() - self.startTime)
         self.publish(
-            self.mqtt_topic + "/$uptime/value",
+            self.mqtt_topic + "/$stats/uptime",
             payload=payload, retain=True)
 
-    def publishUptimeInterval(self):
+    def publishStatsInterval(self):
         """ Publish /$uptime/interval to MQTT """
-        payload = self.uptimeInterval
+        payload = self.statsInterval
         self.publish(
-            self.mqtt_topic + "/$uptime/interval",
+            self.mqtt_topic + "/$stats/interval",
             payload=payload, retain=True)
 
     def publishImplementation(self):
@@ -431,7 +430,7 @@ class Homie(object):
             fp.close()
 
         self.publish(
-            self.mqtt_topic + "/$signal",
+            self.mqtt_topic + "/$stats/signal",
             payload=payload, retain=True)
 
     @property
