@@ -123,6 +123,11 @@ class HomieNode(object):
 
         return data
 
+    def setProperty(self, prop):
+        if prop not in self.props:
+            raise ValueError("Property '{}' does not exist.".format(prop))
+        return self.props[prop]
+
     @property
     def nodeId(self):
         return self._nodeId
