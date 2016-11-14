@@ -7,8 +7,9 @@ logger = logging.getLogger(__name__)
 class HomieNodeProp(object):
     """docstring for HomieNodeProp"""
 
-    def __init__(self, prop):
+    def __init__(self, node, prop):
         super(HomieNodeProp, self).__init__()
+        self.node = node  # stores ref to node
         self._prop = None
         self.prop = prop
         self.handler = None
@@ -40,8 +41,9 @@ class HomeNodeRange(HomieNodeProp):
 class HomieNode(object):
     """docstring for HomieNode"""
 
-    def __init__(self, nodeId, nodeType):
+    def __init__(self, homie, nodeId, nodeType):
         super(HomieNode, self).__init__()
+        self.homie = homie
         self.nodeId = nodeId
         self.nodeType = nodeType
         self.props = {}

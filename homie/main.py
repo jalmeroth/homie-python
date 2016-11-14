@@ -78,7 +78,7 @@ class Homie(object):
         return(homieTimer)
 
     def Node(self, *args):
-        homeNode = HomieNode(*args)
+        homeNode = HomieNode(self, *args)
         self.nodes.append(homeNode)
         return(homeNode)
 
