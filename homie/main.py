@@ -256,54 +256,40 @@ class Homie(object):
 
     def subscribe(self, homieNode, attr, callback, qos=None):
         """ Register new subscription and add a callback """
-        self._checkBeforeSetup()
-
-        # user qos prefs
-        if qos is None:
-            qos = int(self.qos)
-
-        subscription = str("/".join(
-            [
-                self.mqtt_topic,
-                homieNode.nodeId,
-                attr,
-                "set"
-            ]))
-
-        logger.debug("subscribe: {} {}".format(subscription, qos))
-
-        if not self.subscribe_all:
-            self.subscriptions.append((subscription, qos))
-
-        if self.mqtt_connected:
-            self._subscribe()
-
-        self.mqtt.message_callback_add(subscription, callback)
+        topic = str("/".join([
+            self.mqtt_topic,    # base topic + deviceId
+            homieNode.nodeId,   # nodeId
+            attr,               # propertyId
+            "set"
+        ]))
+        self.subscribeTopic(topic, callback, qos)
 
     def subscribeProperty(self, homieNode, attr, callback, qos=None):
         """ Register new subscription for property and add a callback """
+        topic = str("/".join([
+            self.mqtt_topic,
+            homieNode.nodeId,
+            attr
+        ]))
+        self.subscribeTopic(topic, callback, qos)
+
+    def subscribeTopic(self, topic, callback, qos=None):
+        """  """
         self._checkBeforeSetup()
 
         # user qos prefs
         if qos is None:
             qos = int(self.qos)
 
-        subscription = str("/".join(
-            [
-                self.mqtt_topic,
-                homieNode.nodeId,
-                attr
-            ]))
-
-        logger.debug("subscribe: {} {}".format(subscription, qos))
+        logger.debug("subscribe: {} {}".format(topic, qos))
 
         if not self.subscribe_all:
-            self.subscriptions.append((subscription, qos))
+            self.subscriptions.append((topic, qos))
 
         if self.mqtt_connected:
             self._subscribe()
 
-        self.mqtt.message_callback_add(subscription, callback)
+        self.mqtt.message_callback_add(topic, callback)
 
     def publish(self, topic, payload, retain=True, **kwargs):
         """ Publish messages to MQTT, if connected """
