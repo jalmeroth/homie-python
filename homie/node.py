@@ -17,6 +17,17 @@ class HomieNodeProp(object):
     def settable(self, handler):
         self.handler = handler
 
+    def send(self, val):
+        self.node.homie.publish(
+            "/".join([
+                self.node.homie.baseTopic,
+                self.node.homie.deviceId,
+                self.node.nodeId,
+                self.prop,
+            ]),
+            val,
+        )
+
     @property
     def prop(self):
         return self._prop
@@ -47,6 +58,21 @@ class HomeNodeRange(HomieNodeProp):
             return self
         else:
             logger.warning("Specified range out of announced range.")
+
+    def send(self, val):
+        if self.range is None:
+            raise ValueError("Please specify a range.")
+
+        for x in self.range:
+            self.node.homie.publish(
+                "/".join([
+                    self.node.homie.baseTopic,
+                    self.node.homie.deviceId,
+                    self.node.nodeId,
+                    self.prop + str(x),
+                ]),
+                val,
+            )
 
 
 class HomieNode(object):
