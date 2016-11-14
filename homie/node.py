@@ -32,8 +32,9 @@ class HomieNodeProp(object):
 class HomeNodeRange(HomieNodeProp):
     """docstring for HomeNodeRange"""
 
-    def __init__(self, prop, lower, upper):
-        super(HomeNodeRange, self).__init__(prop)
+    def __init__(self, node, prop, lower, upper):
+        super(HomeNodeRange, self).__init__(node, prop)
+        self.node = node
         self.lower = lower
         self.upper = upper
 
@@ -50,7 +51,7 @@ class HomieNode(object):
 
     def advertise(self, prop):
         if prop not in self.props:
-            homeNodeProp = HomieNodeProp(prop)
+            homeNodeProp = HomieNodeProp(self, prop)
             if homeNodeProp:
                 self.props[prop] = homeNodeProp
                 return(homeNodeProp)
@@ -59,7 +60,7 @@ class HomieNode(object):
 
     def advertiseRange(self, prop, lower, upper):
         if prop not in self.props:
-            homeNodeRange = HomeNodeRange(prop, lower, upper)
+            homeNodeRange = HomeNodeRange(self, prop, lower, upper)
             if homeNodeRange:
                 self.props[prop] = homeNodeRange
                 return(homeNodeRange)
