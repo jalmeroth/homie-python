@@ -414,7 +414,7 @@ class Homie(object):
     def publishSignal(self):
         """ Publish current signal strength to MQTT """
         # default payload
-        payload = 100
+        payload = None
 
         # found on linux
         wireless = "/proc/net/wireless"
@@ -432,9 +432,11 @@ class Homie(object):
                     break
             fp.close()
 
-        self.publish(
-            self.mqtt_topic + "/$stats/signal",
-            payload=payload, retain=True)
+        # publish signal-strength when available
+        if payload is not None:
+            self.publish(
+                self.mqtt_topic + "/$stats/signal",
+                payload=payload, retain=True)
 
     @property
     def baseTopic(self):
