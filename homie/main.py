@@ -254,12 +254,9 @@ class Homie(object):
         logger.debug("{}: {}".format(self.fwname, self.fwversion))
 
     def setNodeProperty(self, homieNode, prop, val, retain=True):
-        topic = "/".join([
-            self.mqtt_topic,
-            homieNode.nodeId,
-            prop
-        ])
-        self.publish(topic, payload=val, retain=retain)
+        """ DEPRECATED """
+        logger.warning("setNodeProperty() has been deprecated.")
+        homieNode.setProperty(prop).send(val)
 
     def subscribe(self, homieNode, attr, callback, qos=None):
         """ Register new subscription and add a callback """
