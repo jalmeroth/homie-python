@@ -237,11 +237,14 @@ class Homie(object):
         ])
         self.subscribeTopic(topic, callback, qos)
 
-    def setFirmware(self, name, version):
+    def setFirmware(self, fwname, version):
         """docstring for setFirmware"""
         self._checkBeforeSetup()
 
-        self.fwname = name
+        if not isIdFormat(fwname):
+            raise ValueError("fwname needs to adhere idFormat")
+
+        self.fwname = fwname
         self.fwversion = version
         logger.debug("{}: {}".format(self.fwname, self.fwversion))
 
