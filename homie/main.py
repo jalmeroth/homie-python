@@ -38,16 +38,18 @@ class Homie(object):
 
     def __init__(self, configFile):
         super(Homie, self).__init__()
+        # define our exit-strategy
         atexit.register(self._exitus)
         signal.signal(signal.SIGTERM, self._sigTerm)
         signal.signal(signal.SIGHUP, self._sigHup)
 
         self.implementation_config = {}
         self._initAttrs(configFile)
+
         if not self.host:
             raise ValueError("No host specified.")
 
-        self.startTime = time.time()
+        self.startTime = time.time()    # $stats/uptime
         self.fwname = None
         self.fwversion = None
         self.nodes = []
@@ -61,11 +63,11 @@ class Homie(object):
             self.deviceId,
         ]))
 
-        self._setupCalled = False
-        self._mqtt_connected = False  # connected
-        self._mqtt_subscribed = False  # subscribed
-        clientId = "Homie-" + str(self.deviceId)
+        self._setupCalled = False       # call setup first
+        self._mqtt_connected = False    # connected
+        self._mqtt_subscribed = False   # subscribed
 
+        clientId = "Homie-" + str(self.deviceId)
         try:
             self.mqtt = HomieMqtt(self, clientId, protocol=self.protocol)
         except Exception as e:
@@ -229,7 +231,10 @@ class Homie(object):
         self.signalTimer.start()
 
     def setBroadcastHandler(self, callback, level="#", qos=None):
-        """  """
+        """
+        Homie defines a broadcast channel, so a controller
+        is able to broadcast a message to every Homie devices
+        """
         topic = "/".join([
             self.mqtt_topic,  # base topic + deviceId
             "$broadcast",
