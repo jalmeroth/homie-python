@@ -24,6 +24,7 @@ class HomieMqtt(paho_mqtt.Client):
 def main():
     pass
 
+
 if __name__ == '__main__':
     try:
         main()

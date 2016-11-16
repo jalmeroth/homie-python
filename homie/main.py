@@ -457,8 +457,10 @@ class Homie(object):
         if isIdFormat(deviceId):
             self._deviceId = deviceId
         else:
-            logger.warning("Provided 'deviceId' has no valid ID-Format.")
             self._deviceId = generateDeviceId()
+            logger.warning(
+                "Invalid deviceId specified. Using '{}' instead.".format(
+                    self._deviceId))
 
     @property
     def mqtt_connected(self):
