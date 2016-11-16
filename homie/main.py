@@ -49,7 +49,7 @@ class Homie(object):
         if not self.host:
             raise ValueError("No host specified.")
 
-        self.startTime = time.time()    # $stats/uptime
+        self.statsUptime = time.time()    # $stats/uptime
         self.fwname = None
         self.fwversion = None
         self.nodes = []
@@ -360,7 +360,7 @@ class Homie(object):
 
     def publishUptime(self):
         """ Publish /$uptime/value to MQTT """
-        payload = int(time.time() - self.startTime)
+        payload = int(time.time() - self.statsUptime)
         self.publish(
             self.mqtt_topic + "/$stats/uptime",
             payload=payload, retain=True)
