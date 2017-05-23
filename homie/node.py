@@ -7,6 +7,9 @@ logger = logging.getLogger(__name__)
 class HomieNodeProp(object):
     """docstring for HomieNodeProp"""
 
+    def setSubscribe(self, func):
+        self.subscribe = func
+
     def __init__(self, node, prop):
         super(HomieNodeProp, self).__init__()
         self.node = node  # stores ref to node
@@ -16,6 +19,7 @@ class HomieNodeProp(object):
 
     def settable(self, handler):
         self.handler = handler
+        self.subscribe(self.node, self.prop, handler)
 
     def send(self, val):
         self.node.homie.publish(
@@ -50,6 +54,11 @@ class HomeNodeRange(HomieNodeProp):
         self.range = None
         self.lower = lower
         self.upper = upper
+
+    def settable(self, handler):
+        self.handler = handler
+        for x in self._range:
+            self.subscribe(self.node, self.prop+str(x), handler)
 
     def setRange(self, lower, upper):
         # Todo: validate input
@@ -88,6 +97,7 @@ class HomieNode(object):
     def advertise(self, prop):
         if prop not in self.props:
             homeNodeProp = HomieNodeProp(self, prop)
+            homeNodeProp.setSubscribe(self.homie.subscribe)
             if homeNodeProp:
                 self.props[prop] = homeNodeProp
                 return(homeNodeProp)
@@ -97,6 +107,7 @@ class HomieNode(object):
     def advertiseRange(self, prop, lower, upper):
         if prop not in self.props:
             homeNodeRange = HomeNodeRange(self, prop, lower, upper)
+            homeNodeRange.setSubscribe(self.homie.subscribe)
             if homeNodeRange:
                 self.props[prop] = homeNodeRange
                 return(homeNodeRange)
