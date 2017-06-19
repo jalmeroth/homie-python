@@ -10,6 +10,14 @@ class HomieNode(object):
         super(HomieNode, self).__init__()
         self.nodeId = nodeId
         self.nodeType = nodeType
+        self.nodeProperties = []
+
+    def addProperty(self, propId, settable=False):
+        self.nodeProperties.append(propId + (":settable" if settable else ""))
+        return self
+
+    def nodeProperties(self):
+        return self.nodeProperties
 
     @property
     def nodeId(self):

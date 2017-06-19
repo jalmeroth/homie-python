@@ -1,12 +1,12 @@
 from setuptools import setup
 
-version = "0.2.1"
+version = "0.3.0"
 
 setup(
     name="homie",
     packages=["homie"],
     version=version,
-    description="Experimental implementation of the IoT convention called homie",
+    description="Experimental implementation of the IoT convention called homie 2",
     author="Jan Almeroth",
     author_email="homie-python@almeroth.com",
     url="https://github.com/jalmeroth/homie-python",
@@ -19,5 +19,8 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Home Automation"
     ],
-    install_requires=['paho-mqtt>=1.2']
+    install_requires=[
+        'paho-mqtt>=1.2',
+        'netifaces>=0.10.6'
+    ]
 )
