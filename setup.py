@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = "0.2.1"
+version = "0.2.2"
 
 setup(
     name="homie",
@@ -19,5 +19,5 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Home Automation"
     ],
-    install_requires=['paho-mqtt>=1.2']
+    install_requires=['paho-mqtt>=1.3.0']
 )

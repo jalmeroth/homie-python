@@ -1,1 +1,1 @@
-paho-mqtt>=1.2
+paho-mqtt>=1.3.0

@@ -22,7 +22,6 @@ DEFAULT_PREFS = {
     "KEEPALIVE": {"key": "keepalive", "val": 60},
     "PASSWORD": {"key": "password", "val": None},
     "PORT": {"key": "port", "val": 1883},
-    "PROTOCOL": {"key": "protocol", "val": None},
     "QOS": {"key": "qos", "val": 1},
     "SUBSCRIBE_ALL": {"key": "subscribe_all", "val": False},
     "TOPIC": {"key": "baseTopic", "val": "devices"},
@@ -62,7 +61,7 @@ class Homie(object):
         clientId = "Homie-" + str(self.deviceId)
 
         try:
-            self.mqtt = HomieMqtt(self, clientId, protocol=self.protocol)
+            self.mqtt = HomieMqtt(self, clientId)
         except Exception as e:
             raise e
 
