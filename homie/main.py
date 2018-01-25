@@ -322,27 +322,9 @@ class Homie(object):
     def publishNodes(self):
         """ Publish registered nodes to MQTT """
         for node in self.nodes:
-            logger.debug("$type: {}:{}".format(node.nodeId, node.nodeType))
-            self.publish(
-                "{}/{}/{}".format(
-                    self.mqtt_topic,
-                    node.nodeId,
-                    "$type",
-                ),
-                payload=node.nodeType,
-                retain=True
-            )
-
-            logger.debug("$properties: {}".format(node.getProperties()))
-            self.publish(
-                "{}/{}/{}".format(
-                    self.mqtt_topic,
-                    node.nodeId,
-                    "$properties"
-                ),
-                payload=node.getProperties(),
-                retain=True
-            )
+            node.send_attributes()
+            for prop_id, node_property in node.props.items():
+                node_property.send_attributes()
 
     def publishLocalip(self):
         """ Publish local IP Address to MQTT """

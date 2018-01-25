@@ -25,8 +25,8 @@ def rangeOnHandler(mqttc, obj, msg):
 
 def main():
     Homie.setFirmware("relay-switch", "1.0.0")
-    switchNode.advertise("on").settable(switchOnHandler)
-    switchNode.advertiseRange("range", 1, 5).settable(rangeOnHandler)
+    switchNode.advertise("on", "boolean", "true,false", "State of the switch").settable(switchOnHandler)
+    switchNode.advertiseRange("range", 1, 5, "boolean", "true,false").settable(rangeOnHandler)
     Homie.setup()
 
     while True:
