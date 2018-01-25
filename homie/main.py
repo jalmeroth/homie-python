@@ -321,7 +321,7 @@ class Homie(object):
 
             logger.debug(str(mid) + " > " + " ".join(msgs))
         else:
-            logger.warn("Not connected.")
+            logger.warning("Not connected.")
 
     def publishNodes(self):
         """ Publish registered nodes to MQTT """
@@ -355,7 +355,7 @@ class Homie(object):
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect((self.host, self.port))
         except Exception as e:
-            logger.warn(e)
+            logger.warning(e)
         else:
             payload = s.getsockname()[0]
             s.close()
