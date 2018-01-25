@@ -9,6 +9,7 @@ import atexit
 import logging
 import os.path
 from os import getenv
+from paho.mqtt.client import MQTTv311, MQTTv31
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
@@ -25,7 +26,7 @@ DEFAULT_PREFS = {
     "KEEPALIVE": {"key": "keepalive", "val": 60},
     "PASSWORD": {"key": "password", "val": None},
     "PORT": {"key": "port", "val": 1883},
-    "PROTOCOL": {"key": "protocol", "val": None},
+    "PROTOCOL": {"key": "protocol", "val": "MQTTv311"},
     "QOS": {"key": "qos", "val": 1},
     "SUBSCRIBE_ALL": {"key": "subscribe_all", "val": False},
     "TOPIC": {"key": "baseTopic", "val": "homie"},
@@ -117,6 +118,14 @@ class Homie(object):
                     DEFAULT_PREFS[pref]['val']  # defaults
                 )
             )
+
+            if key == "protocol":
+                if val == "MQTTv311":
+                    val = MQTTv311
+                elif val == "MQTTv31":
+                    val = MQTTv31
+                else:
+                    raise ValueError("Invalid protocol")
 
             # set attr self.key = val
             setattr(self, key, val)
