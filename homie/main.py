@@ -239,7 +239,7 @@ class Homie(object):
         self.uptimeTimer.start()
         self.signalTimer.start()
 
-    def setBroadcastHandler(self, callback, level="#", qos=None):
+    def setBroadcastHandler(self, callback, level="#", qos=1):
         """
         Homie defines a broadcast channel, so a controller
         is able to broadcast a message to every Homie devices
@@ -267,7 +267,7 @@ class Homie(object):
         logger.warning("setNodeProperty() has been deprecated.")
         homieNode.setProperty(prop).send(val)
 
-    def subscribe(self, homieNode, attr, callback, qos=None):
+    def subscribe(self, homieNode, attr, callback, qos=1):
         """ Register new subscription and add a callback """
         topic = str("/".join([
             self.mqtt_topic,    # base topic + deviceId
@@ -277,7 +277,7 @@ class Homie(object):
         ]))
         self.subscribeTopic(topic, callback, qos)
 
-    def subscribeProperty(self, homieNode, attr, callback, qos=None):
+    def subscribeProperty(self, homieNode, attr, callback, qos=1):
         """ Register new subscription for property and add a callback """
         topic = str("/".join([
             self.mqtt_topic,
@@ -286,13 +286,9 @@ class Homie(object):
         ]))
         self.subscribeTopic(topic, callback, qos)
 
-    def subscribeTopic(self, topic, callback, qos=None):
+    def subscribeTopic(self, topic, callback, qos=1):
         """  """
         self._checkBeforeSetup()
-
-        # user qos prefs
-        if qos is None:
-            qos = int(self.qos)
 
         logger.debug("subscribe: {} {}".format(topic, qos))
 
