@@ -4,7 +4,6 @@ import sys
 import json
 import time
 import signal
-import socket
 import atexit
 import logging
 import os.path
@@ -13,6 +12,7 @@ from paho.mqtt.client import MQTTv311, MQTTv31
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
+from homie.networkinformation import NetworkInformation
 from homie.helpers import isIdFormat, generateDeviceId
 from homie.version import __version__ as HOMIE_PYTHON_VERSION
 logger = logging.getLogger(__name__)
@@ -201,7 +201,7 @@ class Homie(object):
         self.publishFwname()
         self.publishFwversion()
         self.publishNodes()
-        self.publishLocalip()
+        self.publishLocalipAndMac()
         self.publishUptime()
         self.publishStatsInterval()
         self.publishSignal()
@@ -321,26 +321,29 @@ class Homie(object):
 
     def publishNodes(self):
         """ Publish registered nodes to MQTT """
+        payload = ",".join([str(x.nodeId) for x in self.nodes])
+        self.publish(self.mqtt_topic + "/$nodes", payload)
+
         for node in self.nodes:
             node.send_attributes()
             for prop_id, node_property in node.props.items():
                 node_property.send_attributes()
 
-    def publishLocalip(self):
+    def publishLocalipAndMac(self):
         """ Publish local IP Address to MQTT """
-        payload = None
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect((self.host, self.port))
+            ni = NetworkInformation()
+            localIp = ni.getLocalIp(self.host, self.port)
+            localMac = ni.getLocalMacForIp(localIp)
         except Exception as e:
             logger.warning(e)
-        else:
-            payload = s.getsockname()[0]
-            s.close()
 
         self.publish(
             self.mqtt_topic + "/$localip",
-            payload=payload, retain=True)
+            payload=localIp, retain=True)
+        self.publish(
+            self.mqtt_topic + "/$mac",
+            payload=localMac, retain=True)
 
     def publishUptime(self):
         """ Publish /$uptime/value to MQTT """
@@ -350,7 +353,7 @@ class Homie(object):
             payload=payload, retain=True)
 
     def publishStatsInterval(self):
-        """ Publish /$uptime/interval to MQTT """
+        """ Publish /$stats/interval to MQTT """
         payload = self.statsInterval
         self.publish(
             self.mqtt_topic + "/$stats/interval",
