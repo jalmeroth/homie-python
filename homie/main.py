@@ -12,13 +12,9 @@ from paho.mqtt.client import MQTTv311, MQTTv31
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
-<<<<<<< HEAD
 from homie.networkinformation import NetworkInformation
-||||||| merged common ancestors
-=======
 from homie.helpers import isIdFormat, generateDeviceId
 from homie.version import __version__ as HOMIE_PYTHON_VERSION
->>>>>>> dev
 logger = logging.getLogger(__name__)
 
 HOMIE_VERSION = "2.0.0"
@@ -54,15 +50,7 @@ class Homie(object):
         if not self.host:
             raise ValueError("No host specified.")
 
-<<<<<<< HEAD
-        self.startTime = time.time()
-        self.homieVersion = 2
-        self.statsInterval = 60
-||||||| merged common ancestors
-        self.startTime = time.time()
-=======
         self.statsUptime = time.time()    # $stats/uptime
->>>>>>> dev
         self.fwname = None
         self.fwversion = None
         self.nodes = []
@@ -209,12 +197,7 @@ class Homie(object):
             self.mqtt_topic + "/$name",
             payload=self.deviceName, retain=True)
 
-<<<<<<< HEAD
-        self.publishHomieVersion()
-||||||| merged common ancestors
-=======
         self.publishHomie()
->>>>>>> dev
         self.publishFwname()
         self.publishFwversion()
         self.publishNodes()
@@ -336,29 +319,15 @@ class Homie(object):
         else:
             logger.warning("Not connected.")
 
-    def publishHomieVersion(self):
-        self.publish(self.mqtt_topic + "/$homie", payload=self.homieVersion, retain=True)
-
     def publishNodes(self):
         """ Publish registered nodes to MQTT """
-<<<<<<< HEAD
-        for node in self.nodes:
-            topic = self.mqtt_topic + "/" + node.nodeId + "/"
-            propString = ",".join(node.nodeProperties)
-            self.publish(topic + "$type", payload=node.nodeType, retain=True)
-            self.publish(topic + "$properties", payload=propString, retain=True)
-||||||| merged common ancestors
-        payload = ",".join(
-            [(str(x.nodeId) + ":" + str(x.nodeType)) for x in self.nodes])
-        self.publish(
-            self.mqtt_topic + "/$nodes",
-            payload=payload, retain=True)
-=======
+        payload = ",".join([str(x.nodeId) for x in self.nodes])
+        self.publish(self.mqtt_topic + "/$nodes", payload)
+
         for node in self.nodes:
             node.send_attributes()
             for prop_id, node_property in node.props.items():
                 node_property.send_attributes()
->>>>>>> dev
 
     def publishLocalipAndMac(self):
         """ Publish local IP Address to MQTT """
@@ -367,19 +336,7 @@ class Homie(object):
             localIp = ni.getLocalIp(self.host, self.port)
             localMac = ni.getLocalMacForIp(localIp)
         except Exception as e:
-<<<<<<< HEAD
-            logger.warn(e)
-||||||| merged common ancestors
-            logger.warn(e)
-        else:
-            payload = s.getsockname()[0]
-            s.close()
-=======
             logger.warning(e)
-        else:
-            payload = s.getsockname()[0]
-            s.close()
->>>>>>> dev
 
         self.publish(
             self.mqtt_topic + "/$localip",
@@ -387,12 +344,6 @@ class Homie(object):
         self.publish(
             self.mqtt_topic + "/$mac",
             payload=localMac, retain=True)
-
-    def publishStatsInterval(self):
-        """ Publish refresh interval of stats/* props to MQTT """
-        self.publish(
-            self.mqtt_topic + "/$stats/interval",
-            payload=self.statsInterval, retain=True)
 
     def publishUptime(self):
         """ Publish /$uptime/value to MQTT """
@@ -402,7 +353,7 @@ class Homie(object):
             payload=payload, retain=True)
 
     def publishStatsInterval(self):
-        """ Publish /$uptime/interval to MQTT """
+        """ Publish /$stats/interval to MQTT """
         payload = self.statsInterval
         self.publish(
             self.mqtt_topic + "/$stats/interval",
@@ -433,13 +384,7 @@ class Homie(object):
         """ Publish Version of the Homie convention the device conforms to """
         payload = HOMIE_VERSION
         self.publish(
-<<<<<<< HEAD
-            self.mqtt_topic + "/$stats/uptime",
-||||||| merged common ancestors
-            self.mqtt_topic + "/$uptime",
-=======
             self.mqtt_topic + "/$homie",
->>>>>>> dev
             payload=payload, retain=True)
 
     def publishFwname(self):
@@ -457,12 +402,6 @@ class Homie(object):
             self.publish(
                 self.mqtt_topic + "/$fw/version",
                 payload=payload, retain=True)
-
-    def publishImplementation(self):
-        self.publish(
-            self.mqtt_topic + "/$implementation",
-            payload="python", retain=True)
-
 
     def publishSignal(self):
         """ Publish current signal strength to MQTT """
@@ -485,21 +424,11 @@ class Homie(object):
                     break
             fp.close()
 
-<<<<<<< HEAD
-        self.publish(
-            self.mqtt_topic + "/$stats/signal",
-            payload=payload, retain=True)
-||||||| merged common ancestors
-        self.publish(
-            self.mqtt_topic + "/$signal",
-            payload=payload, retain=True)
-=======
         # publish signal-strength when available
         if payload is not None:
             self.publish(
                 self.mqtt_topic + "/$stats/signal",
                 payload=payload, retain=True)
->>>>>>> dev
 
     @property
     def baseTopic(self):

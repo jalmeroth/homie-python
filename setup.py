@@ -1,27 +1,11 @@
 from setuptools import setup
-<<<<<<< HEAD
-
-version = "0.3.0"
-||||||| merged common ancestors
-
-version = "0.2.1"
-=======
 exec(open('homie/version.py').read())
->>>>>>> dev
 
 setup(
     name="homie",
     packages=["homie"],
-<<<<<<< HEAD
-    version=version,
-    description="Experimental implementation of the IoT convention called homie 2",
-||||||| merged common ancestors
-    version=version,
-    description="Experimental implementation of the IoT convention called homie",
-=======
     version=__version__,
     description="Experimental implementation of the IoT convention called homie",
->>>>>>> dev
     author="Jan Almeroth",
     author_email="homie-python@almeroth.com",
     url="https://github.com/jalmeroth/homie-python",

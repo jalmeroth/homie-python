@@ -131,17 +131,6 @@ class HomieNode(object):
         self.homie = homie
         self.nodeId = nodeId
         self.nodeType = nodeType
-<<<<<<< HEAD
-        self.nodeProperties = []
-
-    def addProperty(self, propId, settable=False):
-        self.nodeProperties.append(propId + (":settable" if settable else ""))
-        return self
-
-    def nodeProperties(self):
-        return self.nodeProperties
-||||||| merged common ancestors
-=======
         self.nodeName = name or nodeId
         self.props = {}
 
@@ -207,7 +196,6 @@ class HomieNode(object):
         logger.debug("$properties: {}:{}".format(self.nodeId, self.getProperties()))
         self.homie.publish(topic + "/$properties", self.getProperties())
 
->>>>>>> dev
 
     @property
     def nodeId(self):
