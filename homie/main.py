@@ -194,9 +194,6 @@ class Homie(object):
             self._subscribe()
 
         self.publish(
-            self.mqtt_topic + "/$online",
-            payload="true", retain=True)
-        self.publish(
             self.mqtt_topic + "/$name",
             payload=self.deviceName, retain=True)
 
@@ -211,6 +208,9 @@ class Homie(object):
         self.publishImplementation()
         self.publishImplementationVersion()
         self.publishImplementationConfig()
+        self.publish(
+            self.mqtt_topic + "/$online",
+            payload="true", retain=True)
 
     def _subscribed(self, *args):
         # logger.debug("_subscribed: {}".format(args))
