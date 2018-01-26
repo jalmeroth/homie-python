@@ -18,5 +18,8 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Home Automation"
     ],
-    install_requires=['paho-mqtt>=1.2']
+    install_requires=[
+        'paho-mqtt>=1.2',
+        'netifaces>=0.10.6'
+    ]
 )

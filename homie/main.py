@@ -4,14 +4,15 @@ import sys
 import json
 import time
 import signal
-import socket
 import atexit
 import logging
 import os.path
 from os import getenv
+from paho.mqtt.client import MQTTv311, MQTTv31
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
+from homie.networkinformation import NetworkInformation
 from homie.helpers import isIdFormat, generateDeviceId
 from homie.version import __version__ as HOMIE_PYTHON_VERSION
 logger = logging.getLogger(__name__)
@@ -25,7 +26,7 @@ DEFAULT_PREFS = {
     "KEEPALIVE": {"key": "keepalive", "val": 60},
     "PASSWORD": {"key": "password", "val": None},
     "PORT": {"key": "port", "val": 1883},
-    "PROTOCOL": {"key": "protocol", "val": None},
+    "PROTOCOL": {"key": "protocol", "val": "MQTTv311"},
     "QOS": {"key": "qos", "val": 1},
     "SUBSCRIBE_ALL": {"key": "subscribe_all", "val": False},
     "TOPIC": {"key": "baseTopic", "val": "homie"},
@@ -118,6 +119,14 @@ class Homie(object):
                 )
             )
 
+            if key == "protocol":
+                if val == "MQTTv311":
+                    val = MQTTv311
+                elif val == "MQTTv31":
+                    val = MQTTv31
+                else:
+                    raise ValueError("Invalid protocol")
+
             # set attr self.key = val
             setattr(self, key, val)
             logger.debug("{}: {}".format(key, getattr(self, key)))
@@ -185,9 +194,6 @@ class Homie(object):
             self._subscribe()
 
         self.publish(
-            self.mqtt_topic + "/$online",
-            payload="true", retain=True)
-        self.publish(
             self.mqtt_topic + "/$name",
             payload=self.deviceName, retain=True)
 
@@ -195,13 +201,16 @@ class Homie(object):
         self.publishFwname()
         self.publishFwversion()
         self.publishNodes()
-        self.publishLocalip()
+        self.publishLocalipAndMac()
         self.publishUptime()
         self.publishStatsInterval()
         self.publishSignal()
         self.publishImplementation()
         self.publishImplementationVersion()
         self.publishImplementationConfig()
+        self.publish(
+            self.mqtt_topic + "/$online",
+            payload="true", retain=True)
 
     def _subscribed(self, *args):
         # logger.debug("_subscribed: {}".format(args))
@@ -230,7 +239,7 @@ class Homie(object):
         self.uptimeTimer.start()
         self.signalTimer.start()
 
-    def setBroadcastHandler(self, callback, level="#", qos=None):
+    def setBroadcastHandler(self, callback, level="#", qos=1):
         """
         Homie defines a broadcast channel, so a controller
         is able to broadcast a message to every Homie devices
@@ -258,7 +267,7 @@ class Homie(object):
         logger.warning("setNodeProperty() has been deprecated.")
         homieNode.setProperty(prop).send(val)
 
-    def subscribe(self, homieNode, attr, callback, qos=None):
+    def subscribe(self, homieNode, attr, callback, qos=1):
         """ Register new subscription and add a callback """
         topic = str("/".join([
             self.mqtt_topic,    # base topic + deviceId
@@ -268,7 +277,7 @@ class Homie(object):
         ]))
         self.subscribeTopic(topic, callback, qos)
 
-    def subscribeProperty(self, homieNode, attr, callback, qos=None):
+    def subscribeProperty(self, homieNode, attr, callback, qos=1):
         """ Register new subscription for property and add a callback """
         topic = str("/".join([
             self.mqtt_topic,
@@ -277,13 +286,9 @@ class Homie(object):
         ]))
         self.subscribeTopic(topic, callback, qos)
 
-    def subscribeTopic(self, topic, callback, qos=None):
+    def subscribeTopic(self, topic, callback, qos=1):
         """  """
         self._checkBeforeSetup()
-
-        # user qos prefs
-        if qos is None:
-            qos = int(self.qos)
 
         logger.debug("subscribe: {} {}".format(topic, qos))
 
@@ -312,48 +317,33 @@ class Homie(object):
 
             logger.debug(str(mid) + " > " + " ".join(msgs))
         else:
-            logger.warn("Not connected.")
+            logger.warning("Not connected.")
 
     def publishNodes(self):
         """ Publish registered nodes to MQTT """
+        payload = ",".join([str(x.nodeId) for x in self.nodes])
+        self.publish(self.mqtt_topic + "/$nodes", payload)
+
         for node in self.nodes:
-            logger.debug("$type: {}:{}".format(node.nodeId, node.nodeType))
-            self.publish(
-                "{}/{}/{}".format(
-                    self.mqtt_topic,
-                    node.nodeId,
-                    "$type",
-                ),
-                payload=node.nodeType,
-                retain=True
-            )
+            node.send_attributes()
+            for prop_id, node_property in node.props.items():
+                node_property.send_attributes()
 
-            logger.debug("$properties: {}".format(node.getProperties()))
-            self.publish(
-                "{}/{}/{}".format(
-                    self.mqtt_topic,
-                    node.nodeId,
-                    "$properties"
-                ),
-                payload=node.getProperties(),
-                retain=True
-            )
-
-    def publishLocalip(self):
+    def publishLocalipAndMac(self):
         """ Publish local IP Address to MQTT """
-        payload = None
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect((self.host, self.port))
+            ni = NetworkInformation()
+            localIp = ni.getLocalIp(self.host, self.port)
+            localMac = ni.getLocalMacForIp(localIp)
         except Exception as e:
-            logger.warn(e)
-        else:
-            payload = s.getsockname()[0]
-            s.close()
+            logger.warning(e)
 
         self.publish(
             self.mqtt_topic + "/$localip",
-            payload=payload, retain=True)
+            payload=localIp, retain=True)
+        self.publish(
+            self.mqtt_topic + "/$mac",
+            payload=localMac, retain=True)
 
     def publishUptime(self):
         """ Publish /$uptime/value to MQTT """
@@ -363,7 +353,7 @@ class Homie(object):
             payload=payload, retain=True)
 
     def publishStatsInterval(self):
-        """ Publish /$uptime/interval to MQTT """
+        """ Publish /$stats/interval to MQTT """
         payload = self.statsInterval
         self.publish(
             self.mqtt_topic + "/$stats/interval",

@@ -21,12 +21,13 @@ def getCpuTemperature():
 
 def main():
     Homie.setFirmware("raspi-temperature", "1.0.0")
+    temperatureNode.advertise("degrees", "float", "-20:120", "CPU Temperature in Celsius", "°C")
     Homie.setup()
 
     while True:
         temperature = getCpuTemperature()
         logger.info("Temperature: {:0.2f} °C".format(temperature))
-        Homie.setNodeProperty(temperatureNode, "degrees", temperature, True)
+        temperatureNode.setProperty("degrees").send(temperature)
         time.sleep(TEMPERATURE_INTERVAL)
 
 if __name__ == '__main__':
