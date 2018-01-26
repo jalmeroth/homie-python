@@ -8,6 +8,7 @@ name = "pypi"
 [packages]
 
 paho-mqtt = "*"
+netifaces = "*"
 
 
 [dev-packages]
