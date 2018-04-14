@@ -28,17 +28,35 @@ DEFAULT_PREFS = {
     "USERNAME": {"key": "username", "val": None},
 }
 
+def loadConfigFile(configFile):
+    """ load configuration from configFile """
+    config = {}
+    configFile = os.path.realpath(configFile)
+    try:
+        fp = open(configFile)
+    except EnvironmentError as e:
+        logger.debug(e)
+    else:
+        try:
+            config = json.load(fp)
+        except Exception as e:
+            raise e
+        finally:
+            fp.close()
+    logger.debug("config: {}".format(config))
+    return config
+
 
 class Homie(object):
     """docstring for Homie"""
 
-    def __init__(self, configFile):
+    def __init__(self, config):
         super(Homie, self).__init__()
         atexit.register(self._exitus)
         signal.signal(signal.SIGTERM, self._sigTerm)
         signal.signal(signal.SIGHUP, self._sigHup)
 
-        self._initAttrs(configFile)
+        self._initAttrs(config)
         if not self.host:
             raise ValueError("No host specified.")
 
@@ -75,30 +93,8 @@ class Homie(object):
         self.nodes.append(homeNode)
         return(homeNode)
 
-    def _loadConfig(self, configFile):
-        """ load configuration from configFile """
-        config = {}
-        configFile = os.path.realpath(configFile)
-        try:
-            fp = open(configFile)
-        except EnvironmentError as e:
-            logger.debug(e)
-        else:
-            try:
-                config = json.load(fp)
-            except Exception as e:
-                raise e
-            finally:
-                fp.close()
-        logger.debug("config: {}".format(config))
-        return config
-
-    def _initAttrs(self, configFile):
+    def _initAttrs(self, config):
         """ Initialize homie attributes from env/config/defaults """
-
-        # load configuration from configFile
-        config = self._loadConfig(configFile)
-
         # iterate through DEFAULT_PREFS
         for pref in DEFAULT_PREFS:
             key = DEFAULT_PREFS[pref]['key']
