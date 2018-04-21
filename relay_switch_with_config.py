@@ -5,7 +5,18 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-config = homie.loadConfigFile("homie-python.json")
+config = {
+    "HOST": "test.mosquitto.org",
+    "PORT": 1883,
+    "KEEPALIVE": 10,
+    "USERNAME": "",
+    "PASSWORD": "",
+    "CA_CERTS": "",
+    "DEVICE_ID": "xxxxxxxx",
+    "DEVICE_NAME": "xxxxxxxx",
+    "TOPIC": "devices"
+}
+
 Homie = homie.Homie(config)
 switchNode = Homie.Node("switch", "switch")
 
