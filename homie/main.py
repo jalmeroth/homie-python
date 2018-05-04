@@ -13,6 +13,7 @@ from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
 from homie.networkinformation import NetworkInformation
+from homie.helpers import isIdFormat, generateDeviceId
 logger = logging.getLogger(__name__)
 
 HOMIE_VERSION = "2.0.1"
@@ -415,7 +416,13 @@ class Homie(object):
 
     @deviceId.setter
     def deviceId(self, deviceId):
-        self._deviceId = deviceId
+        if isIdFormat(deviceId):
+            self._deviceId = deviceId
+        else:
+            self._deviceId = generateDeviceId()
+            logger.warning(
+                "Invalid deviceId specified. Using '{}' instead.".format(
+                    self._deviceId))
 
     @property
     def mqtt_connected(self):
