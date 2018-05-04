@@ -69,6 +69,7 @@ class Homie(object):
         self.timers = []
         self.subscriptions = []
         self.subscribe_all_forced = False
+        self.statsInterval = 60
 
         self.mqtt_topic = str("/".join([
             self.baseTopic,
@@ -185,6 +186,7 @@ class Homie(object):
         self.publishFwversion()
         self.publishNodes()
         self.publishLocalipAndMac()
+        self.publishStatsInterval()
         self.publishUptime()
         self.publishSignal()
         self.publishImplementation()
@@ -210,9 +212,9 @@ class Homie(object):
         self._initialize()
 
         self.uptimeTimer = self.Timer(
-            60, self.publishUptime, name="uptimeTimer")
+            self.statsInterval, self.publishUptime, name="uptimeTimer")
         self.signalTimer = self.Timer(
-            60, self.publishSignal, name="signalTimer")
+            self.statsInterval, self.publishSignal, name="signalTimer")
         self.uptimeTimer.start()
         self.signalTimer.start()
 
@@ -330,11 +332,18 @@ class Homie(object):
             self.mqtt_topic + "/$mac",
             payload=localMac, retain=True)
 
+    def publishStatsInterval(self):
+        """ Publish /$stats/interval to MQTT """
+        payload = self.statsInterval
+        self.publish(
+            self.mqtt_topic + "/$stats/interval",
+            payload=payload, retain=True)
+
     def publishUptime(self):
         """ Publish uptime of the script to MQTT """
         payload = int(time.time() - self.startTime)
         self.publish(
-            self.mqtt_topic + "/$uptime",
+            self.mqtt_topic + "/$stats/uptime",
             payload=payload, retain=True)
 
     def publishImplementation(self):
@@ -389,7 +398,7 @@ class Homie(object):
             fp.close()
 
         self.publish(
-            self.mqtt_topic + "/$signal",
+            self.mqtt_topic + "/$stats/signal",
             payload=payload, retain=True)
 
     @property
