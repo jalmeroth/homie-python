@@ -311,7 +311,7 @@ class Homie(object):
     def publishNodes(self):
         """ Publish registered nodes to MQTT """
         payload = ",".join(
-            [(str(x.nodeId) + ":" + str(x.nodeType)) for x in self.nodes])
+            [str(x.nodeId) for x in self.nodes])
         self.publish(
             self.mqtt_topic + "/$nodes",
             payload=payload, retain=True)
