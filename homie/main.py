@@ -187,6 +187,7 @@ class Homie(object):
         self.publishLocalipAndMac()
         self.publishUptime()
         self.publishSignal()
+        self.publishImplementation()
 
     def _subscribed(self, *args):
         # logger.debug("_subscribed: {}".format(args))
@@ -334,6 +335,13 @@ class Homie(object):
         payload = int(time.time() - self.startTime)
         self.publish(
             self.mqtt_topic + "/$uptime",
+            payload=payload, retain=True)
+
+    def publishImplementation(self):
+        """ Publish identifier for the Homie implementation to MQTT """
+        payload = "homie-python"
+        self.publish(
+            self.mqtt_topic + "/$implementation",
             payload=payload, retain=True)
 
     def publishHomieVersion(self):
