@@ -279,9 +279,12 @@ class Homie(object):
 
         self.mqtt.message_callback_add(subscription, callback)
 
-    def publish(self, topic, payload, retain=True, **kwargs):
+    def publish(self, topic, payload, retain=True, qos=None, **kwargs):
         """ Publish messages to MQTT, if connected """
         if self.mqtt_connected:
+            if qos is None:
+                qos = int(self.qos)
+
             msgs = [
                 topic,
                 str(payload),
@@ -292,6 +295,7 @@ class Homie(object):
                 topic,
                 payload=payload,
                 retain=retain,
+                qos=qos,
                 **kwargs)
 
             logger.debug(str(mid) + " > " + " ".join(msgs))
