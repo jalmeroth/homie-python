@@ -15,6 +15,7 @@ from homie.node import HomieNode
 from homie.networkinformation import NetworkInformation
 logger = logging.getLogger(__name__)
 
+HOMIE_VERSION = "2.0.1"
 DEFAULT_PREFS = {
     "CA_CERTS": {"key": "ca_certs", "val": None},
     "DEVICE_ID": {"key": "deviceId", "val": "xxxxxxxx"},
@@ -179,6 +180,7 @@ class Homie(object):
             self.mqtt_topic + "/$name",
             payload=self.deviceName, retain=True)
 
+        self.publishHomieVersion()
         self.publishFwname()
         self.publishFwversion()
         self.publishNodes()
@@ -332,6 +334,13 @@ class Homie(object):
         payload = int(time.time() - self.startTime)
         self.publish(
             self.mqtt_topic + "/$uptime",
+            payload=payload, retain=True)
+
+    def publishHomieVersion(self):
+        """ Publish Version of the Homie convention the device conforms to """
+        payload = HOMIE_VERSION
+        self.publish(
+            self.mqtt_topic + "/$homie",
             payload=payload, retain=True)
 
     def publishFwname(self):
