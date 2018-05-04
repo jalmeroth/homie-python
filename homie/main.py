@@ -12,6 +12,7 @@ from os import getenv
 from homie.mqtt import HomieMqtt
 from homie.timer import HomieTimer
 from homie.node import HomieNode
+from homie.networkinformation import NetworkInformation
 logger = logging.getLogger(__name__)
 
 DEFAULT_PREFS = {
@@ -181,7 +182,7 @@ class Homie(object):
         self.publishFwname()
         self.publishFwversion()
         self.publishNodes()
-        self.publishLocalip()
+        self.publishLocalipAndMac()
         self.publishUptime()
         self.publishSignal()
 
@@ -310,21 +311,21 @@ class Homie(object):
             self.mqtt_topic + "/$nodes",
             payload=payload, retain=True)
 
-    def publishLocalip(self):
-        """ Publish local IP Address to MQTT """
-        payload = None
+    def publishLocalipAndMac(self):
+        """ Publish local IP and MAC Addresses to MQTT """
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect((self.host, self.port))
+            ni = NetworkInformation()
+            localIp = ni.getLocalIp(self.host, self.port)
+            localMac = ni.getLocalMacForIp(localIp)
         except Exception as e:
-            logger.warn(e)
-        else:
-            payload = s.getsockname()[0]
-            s.close()
+            logger.warning(e)
 
         self.publish(
             self.mqtt_topic + "/$localip",
-            payload=payload, retain=True)
+            payload=localIp, retain=True)
+        self.publish(
+            self.mqtt_topic + "/$mac",
+            payload=localMac, retain=True)
 
     def publishUptime(self):
         """ Publish uptime of the script to MQTT """
