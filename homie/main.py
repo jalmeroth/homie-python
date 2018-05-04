@@ -348,7 +348,7 @@ class Homie(object):
         payload = str(self.fwname)
         if self.fwname:
             self.publish(
-                self.mqtt_topic + "/$fwname",
+                self.mqtt_topic + "/$fw/name",
                 payload=payload, retain=True)
 
     def publishFwversion(self):
@@ -356,7 +356,7 @@ class Homie(object):
         payload = str(self.fwversion)
         if self.fwversion:
             self.publish(
-                self.mqtt_topic + "/$fwversion",
+                self.mqtt_topic + "/$fw/version",
                 payload=payload, retain=True)
 
     def publishSignal(self):
