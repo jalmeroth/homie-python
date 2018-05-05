@@ -59,6 +59,18 @@ class Homie(object):
         signal.signal(signal.SIGTERM, self._sigTerm)
         signal.signal(signal.SIGHUP, self._sigHup)
 
+        self.deviceId = None
+        self.deviceName = None
+        self.host = None
+        self.port = None
+        self.username = None
+        self.password = None
+        self.qos = None
+        self.keepalive = None
+        self.baseTopic = None
+        self.ca_certs = None
+        self.subscribe_all = None
+
         self._initAttrs(config)
         if not self.host:
             raise ValueError("No host specified.")
@@ -92,8 +104,8 @@ class Homie(object):
         self.timers.append(homieTimer)
         return(homieTimer)
 
-    def Node(self, *args):
-        homieNode = HomieNode(self, *args)
+    def Node(self, nodeId, nodeType):
+        homieNode = HomieNode(self, nodeId, nodeType)
         self.nodes.append(homieNode)
         return(homieNode)
 
@@ -298,7 +310,7 @@ class Homie(object):
                 str(retain)
             ]
 
-            (result, mid) = self.mqtt.publish(
+            (_, mid) = self.mqtt.publish(
                 topic,
                 payload=payload,
                 retain=retain,
