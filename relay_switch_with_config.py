@@ -6,7 +6,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 config = {
-    "HOST": "test.mosquitto.org",
+    "HOST": "iot.eclipse.org",
     "PORT": 1883,
     "KEEPALIVE": 10,
     "USERNAME": "",
@@ -14,7 +14,7 @@ config = {
     "CA_CERTS": "",
     "DEVICE_ID": "xxxxxxxx",
     "DEVICE_NAME": "xxxxxxxx",
-    "TOPIC": "devices"
+    "TOPIC": "homie"
 }
 
 Homie = homie.Homie(config)
