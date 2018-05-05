@@ -16,6 +16,9 @@ humidityNode = Homie.Node("humidity", "humidity")
 
 def main():
     Homie.setFirmware("awesome-temperature", "1.0.0")
+    temperatureNode.advertise("degrees")
+    humidityNode.advertise("humidity")
+
     Homie.setup()
 
     while True:
@@ -23,10 +26,10 @@ def main():
         humidity = 60.0
 
         logger.info("Temperature: {:0.2f} °C".format(temperature))
-        Homie.setNodeProperty(temperatureNode, "degrees", temperature, True)
+        temperatureNode.setProperty("degrees").send(temperature)
 
         logger.info("Humidity: {:0.2f} %".format(humidity))
-        Homie.setNodeProperty(humidityNode, "humidity", humidity, True)
+        humidityNode.setProperty("humidity").send(humidity)
 
         time.sleep(TEMPERATURE_INTERVAL)
 

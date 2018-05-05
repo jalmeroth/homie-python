@@ -25,15 +25,15 @@ def switchOnHandler(mqttc, obj, msg):
     payload = msg.payload.decode("UTF-8").lower()
     if payload == 'true':
         logger.info("Switch: ON")
-        Homie.setNodeProperty(switchNode, "on", "true", True)
+        switchNode.setProperty("on").send("true")
     else:
         logger.info("Switch: OFF")
-        Homie.setNodeProperty(switchNode, "on", "false", True)
+        switchNode.setProperty("on").send("false")
 
 
 def main():
     Homie.setFirmware("relay-switch", "1.0.0")
-    Homie.subscribe(switchNode, "on", switchOnHandler)
+    switchNode.advertise("on").settable(switchOnHandler)
     Homie.setup()
 
     while True:
