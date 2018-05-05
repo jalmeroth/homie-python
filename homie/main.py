@@ -93,9 +93,9 @@ class Homie(object):
         return(homieTimer)
 
     def Node(self, *args):
-        homeNode = HomieNode(*args)
-        self.nodes.append(homeNode)
-        return(homeNode)
+        homieNode = HomieNode(self, *args)
+        self.nodes.append(homieNode)
+        return(homieNode)
 
     def _initAttrs(self, config):
         """ Initialize homie attributes from env/config/defaults """
@@ -310,12 +310,15 @@ class Homie(object):
             logger.warn("Not connected.")
 
     def publishNodes(self):
-        """ Publish registered nodes to MQTT """
+        """ Publish registered nodes and their properties to MQTT """
         payload = ",".join(
             [str(x.nodeId) for x in self.nodes])
         self.publish(
             self.mqtt_topic + "/$nodes",
             payload=payload, retain=True)
+
+        for node in self.nodes:
+            node.sendProperties()
 
     def publishLocalipAndMac(self):
         """ Publish local IP and MAC Addresses to MQTT """
