@@ -6,7 +6,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 config = {
-    "HOST": "test.mosquitto.org",
+    "HOST": "iot.eclipse.org",
     "PORT": 1883,
     "KEEPALIVE": 10,
     "USERNAME": "",
@@ -14,7 +14,7 @@ config = {
     "CA_CERTS": "",
     "DEVICE_ID": "xxxxxxxx",
     "DEVICE_NAME": "xxxxxxxx",
-    "TOPIC": "devices"
+    "TOPIC": "homie"
 }
 
 Homie = homie.Homie(config)
@@ -25,15 +25,15 @@ def switchOnHandler(mqttc, obj, msg):
     payload = msg.payload.decode("UTF-8").lower()
     if payload == 'true':
         logger.info("Switch: ON")
-        Homie.setNodeProperty(switchNode, "on", "true", True)
+        switchNode.setProperty("on").send("true")
     else:
         logger.info("Switch: OFF")
-        Homie.setNodeProperty(switchNode, "on", "false", True)
+        switchNode.setProperty("on").send("false")
 
 
 def main():
     Homie.setFirmware("relay-switch", "1.0.0")
-    Homie.subscribe(switchNode, "on", switchOnHandler)
+    switchNode.advertise("on").settable(switchOnHandler)
     Homie.setup()
 
     while True:
