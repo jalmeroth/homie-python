@@ -42,12 +42,14 @@ def read_temp():
 
 def main():
     Homie.setFirmware("raspi-temperatureDS18B20", "1.0.0")
+    temperatureNode.advertise("degrees")
+
     Homie.setup()
 
     while True:
         temperature = read_temp()
         logger.info("Temperature: {:0.2f} °C".format(temperature))
-        Homie.setNodeProperty(temperatureNode, "degrees", temperature, True)
+        temperatureNode.setProperty("degrees").send(temperature)
         time.sleep(TEMPERATURE_INTERVAL)
 
 if __name__ == '__main__':
@@ -55,5 +57,3 @@ if __name__ == '__main__':
         main()
     except (KeyboardInterrupt, SystemExit):
         logger.info("Quitting.")
-		
-		
