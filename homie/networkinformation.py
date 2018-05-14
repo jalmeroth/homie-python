@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import logging
-import netifaces, socket
+import netifaces
+import socket
 
 
 class NetworkInformation(object):
@@ -20,7 +21,7 @@ class NetworkInformation(object):
                     addr = addrInfo.get('addr')
                     if addr:
                         map[addr] = interface
-            except:
+            except Exception:
                 pass
         return map
 

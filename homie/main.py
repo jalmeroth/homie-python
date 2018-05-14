@@ -4,7 +4,6 @@ import sys
 import json
 import time
 import signal
-import socket
 import atexit
 import logging
 import os.path
@@ -31,8 +30,9 @@ DEFAULT_PREFS = {
     "USERNAME": {"key": "username", "val": None},
 }
 
+
 def loadConfigFile(configFile):
-    """ load configuration from configFile """
+    """Load configuration from configFile."""
     config = {}
     configFile = os.path.realpath(configFile)
     try:
@@ -478,11 +478,13 @@ class Homie(object):
         raise SystemExit
 
     def __del__(self):
+        """Deconstruct object."""
         logger.debug("Quitting.")
 
 
 def main():
     pass
+
 
 if __name__ == '__main__':
     try:
