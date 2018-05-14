@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+"""Provide a setup routine."""
 from setuptools import setup
 
 version = "0.4.0"
@@ -6,11 +8,13 @@ setup(
     name="homie",
     packages=["homie"],
     version=version,
-    description="Experimental implementation of the IoT convention called homie",
+    description="Implementation of the Homie IoT convention",
     author="Jan Almeroth",
     author_email="homie-python@almeroth.com",
     url="https://github.com/jalmeroth/homie-python",
-    download_url="https://github.com/jalmeroth/homie-python/tarball/" + version,
+    download_url=(
+        "https://github.com/jalmeroth/homie-python/tarball/" +
+        version),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
