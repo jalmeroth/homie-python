@@ -2,7 +2,7 @@
 """Provide a setup routine."""
 from setuptools import setup
 
-version = "0.4.0"
+version = "0.4.1"
 
 setup(
     name="homie",
