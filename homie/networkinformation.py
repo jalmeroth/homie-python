@@ -3,6 +3,7 @@
 import logging
 import netifaces
 import socket
+_LOGGER = logging.getLogger(__name__)
 
 
 class NetworkInformation(object):
@@ -41,9 +42,20 @@ class NetworkInformation(object):
 
     def getLocalMacForIp(self, ip):
         """Get the mac address for that given ip."""
-        if not self.ip_to_interface[ip]:
-            raise ValueError('could not find interface for local ip ' + ip)
-        link = netifaces.ifaddresses(self.ip_to_interface[ip])[netifaces.AF_LINK]
-        if len(link) > 1:
-            raise ValueError('Found more than one interface with that ip, conflict!')
-        return link[0].get('addr')
+        _LOGGER.debug("Interfaces found: %s", self.ip_to_interface)
+        _LOGGER.debug("Looking for IP: %s", ip)
+
+        mac_addr = None
+        if_name = self.ip_to_interface.get(ip)
+
+        try:
+            link = netifaces.ifaddresses(if_name)[netifaces.AF_LINK]
+        except (KeyError, TypeError):
+            _LOGGER.warning('Could not determine MAC for: %s', if_name)
+        else:
+            _LOGGER.debug("Found link: %s", link)
+            if len(link) > 1:
+                _LOGGER.warning(
+                    'Conflict: Multiple interfaces found for IP: %s!', ip)
+            mac_addr = link[0].get('addr')
+        return mac_addr

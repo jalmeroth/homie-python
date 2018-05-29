@@ -333,20 +333,18 @@ class Homie(object):
             node.sendProperties()
 
     def publishLocalipAndMac(self):
-        """ Publish local IP and MAC Addresses to MQTT """
-        try:
-            ni = NetworkInformation()
-            localIp = ni.getLocalIp(self.host, self.port)
-            localMac = ni.getLocalMacForIp(localIp)
-        except Exception as e:
-            logger.warning(e)
+        """Publish local IP and MAC Addresses to MQTT."""
+        net_info = NetworkInformation()
+        local_ip = net_info.getLocalIp(self.host, self.port)
+        local_mac = net_info.getLocalMacForIp(local_ip)
 
         self.publish(
             self.mqtt_topic + "/$localip",
-            payload=localIp, retain=True)
+            payload=local_ip, retain=True)
+
         self.publish(
             self.mqtt_topic + "/$mac",
-            payload=localMac, retain=True)
+            payload=local_mac, retain=True)
 
     def publishStatsInterval(self):
         """ Publish /$stats/interval to MQTT """
