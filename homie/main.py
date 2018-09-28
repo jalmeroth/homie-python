@@ -3,7 +3,6 @@
 import sys
 import json
 import time
-import signal
 import atexit
 import logging
 import os.path
@@ -56,8 +55,6 @@ class Homie(object):
     def __init__(self, config):
         super(Homie, self).__init__()
         atexit.register(self._exitus)
-        signal.signal(signal.SIGTERM, self._sigTerm)
-        signal.signal(signal.SIGHUP, self._sigHup)
 
         self.deviceId = None
         self.deviceName = None
@@ -465,16 +462,6 @@ class Homie(object):
         self.mqtt.loop_stop()
         self.mqtt.disconnect()
 
-    def _sigTerm(self, signal, frame):
-        """ let's do a quit, which atexit will notice """
-        logger.debug("Received SIGTERM")
-        raise SystemExit
-
-    def _sigHup(self, signal, frame):
-        """ let's do a quit, which atexit will notice """
-        logger.debug("Received SIGHUP")
-        raise SystemExit
-
     def __del__(self):
         """Deconstruct object."""
         logger.debug("Quitting.")
@@ -487,5 +474,5 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except (KeyboardInterrupt, SystemExit):
+    except (KeyboardInterrupt):
         print("Quitting.")
